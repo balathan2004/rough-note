@@ -2,11 +2,14 @@ const admin = require("firebase-admin");
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import { getAuth } from "firebase-admin/auth";
-const serviceAccount = require("../../configs/admin_cred.json");
+import serviceAccount from "../../configs/admin_cred.json";
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-},"admin");
+if (!admin.apps.length) {
+  admin.initializeApp(
+    { credential: admin.credential.cert(serviceAccount) },
+    "admin_account"
+  );
+}
 
 
 const app_admin = admin.app("admin_account");

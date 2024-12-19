@@ -1,4 +1,4 @@
-import { ResponseConfig } from "./interfaces";
+import { ResponseConfig } from "./utils/interfaces";
 
 interface Props {
   data: object;

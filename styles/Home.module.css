@@ -1,0 +1,132 @@
+.home_container {
+  display: flex;
+  margin-top: 1rem;
+  min-height: calc(100vh - 80px);
+  justify-content: center;
+}
+
+.home_container .icon {
+  margin-right: 10px;
+}
+
+.home_container .notes {
+  flex: 1;
+  width: 30%;
+}
+
+.home_container .editor {
+  flex: 1;
+  margin-top: 1rem;
+}
+
+.home_container .editor .input,
+.home_container .editor .input_title {
+  display: block;
+  width: 90%;
+  border: none;
+  margin-bottom: 1rem;
+  font-size: 22px;
+}
+
+.home_container .editor .input_title {
+  font-size: 24px;
+}
+
+.home_container .editor span {
+  display: block;
+  margin: 1rem 0;
+  font-size: 16px;
+}
+
+.home_container .editor .button {
+  width: 30%;
+  margin-right: 1rem;
+}
+
+.placeholder_card {
+  width: 400px;
+}
+
+.placeholder_card label {
+  width: 90%;
+  display: block;
+  margin: auto;
+  line-height: 40px;
+}
+
+
+
+.doc_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.doc_container article {
+  max-width: 500px;
+  margin: 1rem;
+}
+
+.doc_container article h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.doc_container article p {
+  font-size: 18px;
+  margin: 0.2rem 0;
+}
+
+.doc_container article span {
+  font-size: 14px;
+  line-height: 35px;
+}
+
+.doc_container button {
+  width: 50%;
+  margin: 1rem;
+}
+
+@media (max-width: 600px) {
+  .home_container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .home_container .notes,
+  .home_container .editor {
+    width: 95%;
+    margin: auto;
+  }
+
+  .home_container .editor {
+    width: 90%;
+    margin: auto;
+    padding-bottom: 2rem;
+  }
+
+  .home_container .editor h1 {
+    text-align: center;
+  }
+
+  .home_container .editor .button {
+    width: 90%;
+    display: block;
+    margin-top: 1rem;
+  }
+
+  .home_container .editor .btn_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .doc_container button {
+    width: 90%;
+  }
+
+  .home_container .editor .input,
+  .home_container .editor .input_title,
+  .doc_container article p {
+    font-size: 20px;
+  }
+}

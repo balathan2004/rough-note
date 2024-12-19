@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import SendData from "@/components/SendData";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
+import { TextField } from "@mui/material";
 
 const SignUp: FC = () => {
   const [userData, setUserData] = useState({
@@ -18,7 +19,7 @@ const SignUp: FC = () => {
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await SendData({ route: "/api/signup", data: userData });
+    const response = await SendData({ route: "/api/register", data: userData });
     setError(response.message);
 
     if (response.status == 200) {
@@ -35,25 +36,25 @@ const SignUp: FC = () => {
           <form onSubmit={handleForm}>
             <div>
               <label>Enter Email</label>
-              <input
-                minLength={6}
+              <TextField fullWidth
+                name="email"
                 required
                 onChange={handleInput}
-                name="email"
+                multiline={false}
                 type="email"
-              />
+              ></TextField>
             </div>
             <div>
               <label>Enter Password</label>
-              <input
-                minLength={6}
-                required
-                onChange={handleInput}
+              <TextField fullWidth
                 name="password"
-                type="text"
-              />
+                required
+                multiline={false}
+                onChange={handleInput}
+                type="email"
+              ></TextField>
             </div>
-            <button>SignUp</button>
+            <button>Signup</button>
           </form>
         </article>
       </div>

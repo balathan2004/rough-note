@@ -18,10 +18,10 @@ body {
 }
 
 .container {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 70px);
   width: 100vw;
   position: relative;
-  top: 80px;
+  top: 60px;
   background-color: rgb(235, 229, 229);
   overflow: auto;
 }
