@@ -9,7 +9,7 @@ const AboutPage = () => {
         <p>
           Welcome to your go-to app for organizing your thoughts, ideas, and
           tasks effortlessly! We designed this app to be your trusted companion
-          for productivity, whether you're planning projects, taking meeting
+          for productivity, whether you`&aposre planning projects, taking meeting
           notes, or jotting down daily reminders.
         </p>
 

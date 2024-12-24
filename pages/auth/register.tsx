@@ -2,7 +2,9 @@ import React, { FC, useState } from "react";
 import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
-import { TextField } from "@mui/material";
+import Link from "next/link";
+import { Button, TextField } from "@mui/material";
+import { useReplyContext } from "@/components/context/reply_context";
 
 const SignUp: FC = () => {
   const [userData, setUserData] = useState({
@@ -11,6 +13,7 @@ const SignUp: FC = () => {
   });
   const router = useRouter();
   const [error, setError] = useState("");
+  const { setReply } = useReplyContext();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -21,7 +24,7 @@ const SignUp: FC = () => {
     event.preventDefault();
     const response = await SendData({ route: "/api/register", data: userData });
     setError(response.message);
-
+    setReply(response.message);
     if (response.status == 200) {
       router.push("/home");
     }
@@ -36,7 +39,9 @@ const SignUp: FC = () => {
           <form onSubmit={handleForm}>
             <div>
               <label>Enter Email</label>
-              <TextField fullWidth
+              <TextField
+                fullWidth
+                placeholder="Your Email"
                 name="email"
                 required
                 onChange={handleInput}
@@ -46,15 +51,20 @@ const SignUp: FC = () => {
             </div>
             <div>
               <label>Enter Password</label>
-              <TextField fullWidth
+              <TextField
+                fullWidth
                 name="password"
                 required
+                placeholder="Your Password"
                 multiline={false}
                 onChange={handleInput}
                 type="email"
               ></TextField>
             </div>
-            <button>Signup</button>
+            <Link href="/auth/login">already have an account </Link>
+            <Button fullWidth type="submit" variant="outlined">
+              Sign up
+            </Button>
           </form>
         </article>
       </div>

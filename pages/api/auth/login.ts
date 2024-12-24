@@ -23,12 +23,12 @@ export default async function handler(
       sameSite: "none",
     });
 
-    res.json({ status: 200, message: "login" });
+    res.json({ status: 200, message: "Login Successful" });
   } catch (err) {
     if (err instanceof FirebaseError) {
       res.json({ status: 300, message: err.code });
     } else {
-      res.json({ status: 300, message: "login failed" });
+      res.json({ status: 300, message: "Login Failed" });
     }
   }
 }

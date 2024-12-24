@@ -11,7 +11,7 @@ export default async function handler(
   const uid = req.cookies.roughnote_uid || false;
   try {
     if (!uid) {
-      res.json({ status: 300, message: "not authorised", credentials: null });
+      res.json({ status: 300, message: "Not authorised", credentials: null });
       return;
     }
 
@@ -19,7 +19,7 @@ export default async function handler(
     const userDoc = await getDoc(docRef);
 
     if (!userDoc.exists()) {
-      res.json({ status: 300, message: "not authorised", credentials: null });
+      res.json({ status: 300, message: "Not authorised", credentials: null });
       return;
     }
 
@@ -27,11 +27,11 @@ export default async function handler(
 
     res.json({
       status: 200,
-      message: "details fetched",
+      message: "Details fetched",
       credentials: userData,
     });
   } catch (err) {
     console.log(err);
-    res.json({ status: 300, message: "not authorised", credentials: null });
+    res.json({ status: 300, message: "Not authorised", credentials: null });
   }
 }

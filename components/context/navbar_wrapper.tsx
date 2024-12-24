@@ -1,7 +1,6 @@
 import React, { useContext, useState, FC, ReactNode } from "react";
 
 export const NavInit = [
-  { name: "Home", path: "/home" },
   { name: "About", path: "/about" },
   { name: "Login", path: "/auth/login" },
   { name: "Signup", path: "/auth/register" },

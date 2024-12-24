@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 
 const ResetPassword: FC = () => {
   const [email, setEmail] = useState("");
@@ -28,21 +28,29 @@ const ResetPassword: FC = () => {
       <div className={styles.login_container}>
         <article>
           <h1>Reset Password</h1>
-          <span>{error}</span>
+          <p>{error}</p>
           <form onSubmit={handleForm}>
             <div>
               <label>Enter Email</label>
-              <TextField
-                multiline={false}
+               <TextField
                 fullWidth
                 name="email"
                 required
+                placeholder="Your Email"
+                id="outlined-basic"
                 onChange={(event) => setEmail(event.target.value)}
                 type="email"
-              ></TextField>
+              ></TextField> 
+          
             </div>
-
-            <button>Send Mail</button>
+            <Button
+              className={styles.forget_btn}
+              fullWidth
+              type="submit"
+              variant="outlined"
+            >
+              Send Password Reset Mail
+            </Button>
           </form>
         </article>
       </div>

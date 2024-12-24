@@ -98,7 +98,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const url=process.env.NODE_ENV=="production"?process.env.production_domain:"http://localhost:3000"
+  const url=process.env.NODE_ENV=="production"?`${process.env.production_domain}`:"http://localhost:3000"
 
   const response = await fetch(`${url}/api/docs/get_docs`, {
     method: "POST",

@@ -42,12 +42,12 @@ export default async function handler(
       sameSite: "none",
     });
 
-    res.json({ status: 200, message: "login" });
+    res.json({ status: 200, message: "Login Successful" });
   } catch (err) {
     if (err instanceof FirebaseError) {
       res.json({ status: 300, message: err.code });
     } else {
-      res.json({ status: 300, message: "failed to create account" });
+      res.json({ status: 300, message: "Failed to create account" });
     }
   }
 }

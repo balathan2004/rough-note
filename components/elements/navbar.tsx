@@ -28,20 +28,24 @@ export default function DrawerAppBar() {
   };
 
   const drawer = (
-    <Box  className="nav" onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+    <Box
+      className="nav"
+      onClick={handleDrawerToggle}
+      sx={{ textAlign: "center" }}
+    >
       <Typography variant="h6" sx={{ my: 2 }}>
         <Link href="/">Rough Note</Link>
       </Typography>
       <Divider />
       <List>
         {dirs.map((item) => (
-          <ListItem key={item.name} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <Link href={item.path}>
+          <Link href={item.path} key={item.name}>
+            <ListItem  disablePadding>
+              <ListItemButton sx={{ textAlign: "center" }}>
                 <ListItemText primary={item.name} />
-              </Link>
-            </ListItemButton>
-          </ListItem>
+              </ListItemButton>
+            </ListItem>
+          </Link>
         ))}
       </List>
     </Box>

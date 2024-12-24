@@ -5,13 +5,13 @@ import { getAuth ,GoogleAuthProvider} from "firebase/auth";
 import { Analytics, getAnalytics ,isSupported} from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAQh5bYzB5Uw-QcP8wOcbL_nWKaY3ErgYU",
-  authDomain: "rough-note-de9b7.firebaseapp.com",
-  projectId: "rough-note-de9b7",
-  storageBucket: "rough-note-de9b7.appspot.com",
-  messagingSenderId: "175218120868",
-  appId: "1:175218120868:web:5f60ecb872d60c2edfae31",
-  measurementId: "G-V116H51MQE"
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId:process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId
 };
 const app = initializeApp(firebaseConfig,"client");
 const firestore = getFirestore(app);
