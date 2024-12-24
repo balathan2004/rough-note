@@ -98,7 +98,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const response = await fetch("http://localhost:3000/api/docs/get_docs", {
+  const url=process.env.NODE_ENV=="production"?process.env.production_domain:"http://localhost:3000"
+
+  const response = await fetch(`${url}/api/docs/get_docs`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
