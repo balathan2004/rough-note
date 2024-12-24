@@ -8,7 +8,7 @@ interface Props {
   selectedDocId:string;
 }
 
-//helo
+//helos
 
 export default function SingleNotePressable({ data, changeDoc,selectedDocId }: Props) {
   const handleChange = () => {
