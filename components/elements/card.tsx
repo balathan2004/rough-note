@@ -1,4 +1,4 @@
-import React, { Component, FC } from "react";
+import React, { FC } from "react";
 import { docInterface } from "../utils/interfaces";
 import moment from "moment";
 interface Props {

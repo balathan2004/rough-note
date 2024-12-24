@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import React, { useEffect } from "react";
+import React from "react";
 import UserContextHolder from "@/components/context/user_wrapper";
 import ContextWrapper from "@/components/context/context_wrapper";
 import NavbarHolder from "@/components/context/navbar_wrapper";

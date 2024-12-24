@@ -1,7 +1,7 @@
 import { FC, ReactNode, useEffect } from "react";
 import { useUserContext } from "./user_wrapper";
 import { UserCredResponse } from "../utils/interfaces";
-import { useNavbarContext, NavInit, NavUsers } from "./navbar_wrapper";
+import { useNavbarContext, NavUsers } from "./navbar_wrapper";
 import ReplyPopUp from "../elements/replyPopup";
 import DrawerAppBar from "../elements/navbar";
 
