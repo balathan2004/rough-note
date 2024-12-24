@@ -58,7 +58,7 @@ const SignUp: FC = () => {
                 placeholder="Your Password"
                 multiline={false}
                 onChange={handleInput}
-                type="email"
+                type="text" 
               ></TextField>
             </div>
             <Link href="/auth/login">already have an account </Link>
