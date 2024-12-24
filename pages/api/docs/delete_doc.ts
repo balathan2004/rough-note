@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { docInterface, ResponseConfig } from "@/components/utils/interfaces";
-import { updateDoc, doc, getDoc, setDoc, arrayUnion } from "firebase/firestore";
+import { updateDoc, doc, getDoc} from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
 
 export default async function handler(

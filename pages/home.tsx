@@ -18,7 +18,7 @@ const Home: FC<Props> = ({ data }) => {
   const [currentDocId, setCurrentDocId] = useState(data[0].doc_id);
   const [currentDoc, setCurrentDoc] = useState(data[0]);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
-  const notesRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (currentDocId) {
       const findDoc = newData.filter((item) => item.doc_id === currentDocId);

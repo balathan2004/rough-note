@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { docInterface } from "../utils/interfaces";
 import moment from "moment";
 import styles from "@/styles/Home.module.css"

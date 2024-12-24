@@ -3,6 +3,7 @@ import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 import { TextField } from "@mui/material";
+import Link from "next/link";
 
 const Login: FC = () => {
   const [userData, setUserData] = useState({
@@ -59,7 +60,7 @@ const Login: FC = () => {
                 type="text"
               ></TextField>
             </div>
-            <a href="/auth/reset_password">forget password ??</a>
+            <Link href="/auth/reset_password">forget password ??</Link>
             <button>Login</button>
           </form>
         </article>
