@@ -12,7 +12,7 @@ const ContextWrapper: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     async function getCred() {
       console.log("started");
-      const response = await fetch(`api/auth/login_cred`, {
+      const response = await fetch(`/api/auth/login_cred`, {
         method: "GET",
         credentials: "include",
       });

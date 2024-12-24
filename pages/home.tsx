@@ -18,7 +18,7 @@ const Home: FC<Props> = ({ data }) => {
   const [currentDocId, setCurrentDocId] = useState(data[0].doc_id);
   const [currentDoc, setCurrentDoc] = useState(data[0]);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
-
+  const notesRef = React.useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (currentDocId) {
       const findDoc = newData.filter((item) => item.doc_id === currentDocId);
@@ -42,7 +42,7 @@ const Home: FC<Props> = ({ data }) => {
       uid: userCred?.uid || "",
     };
     setNewData([...newData, createNewNote]);
-    setCurrentDocId(createNewNote.doc_id)
+    setCurrentDocId(createNewNote.doc_id);
   };
 
   return (
@@ -51,12 +51,14 @@ const Home: FC<Props> = ({ data }) => {
         {userCred ? (
           <>
             <div className={styles.notes}>
+              <h1 className={styles.your_notes}>Your Notes</h1>
               <div className={styles.doc_container}>
                 {newData.map((item) => (
                   <SingleNotePressable
                     changeDoc={setCurrentDocId}
                     key={item.doc_id}
                     data={item}
+                    selectedDocId={currentDocId}
                   />
                 ))}
                 <Button onClick={addDoc} fullWidth variant="contained">
@@ -86,20 +88,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const uid = req.cookies.roughnote_uid || false;
 
-  if (uid) {
-    const response = await fetch("http://localhost:3000/api/docs/get_docs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ uid: uid }),
-    });
-    const responseJson: docResponse = await response.json();
-
+  if (!uid) {
+    // Redirect to a login page or some other fallback page
     return {
-      props: {
-        data: responseJson.docData,
+      redirect: {
+        destination: "/", // Replace '/login' with your desired route
+        permanent: false, // Indicates that this is not a permanent redirect
       },
     };
   }
+
+  const response = await fetch("http://localhost:3000/api/docs/get_docs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ uid: uid }),
+  });
+  const responseJson: docResponse = await response.json();
+
+  return {
+    props: {
+      data: responseJson.docData,
+    },
+  };
 }

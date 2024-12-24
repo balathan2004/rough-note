@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    padding-top: 1rem;
+    height: calc(100vh - 80px); /* Ensure it takes full available height */
+    justify-content: center;
+    gap: 10%;
+    position: relative;
+    height: fit-content;
+    width: 100%;
+  }
+
+.container form{
+  margin: 1rem;
+}
+
+.container form h1{
+  text-align: center;
+}
+
+.container form .input{
+  margin: 1rem 0;
+}
+
+.container form button{
+  height: 40px;
+}
+
+.container article{
+  margin: 1rem;
+}
+
+.container article p{
+  margin: 1rem 0;
+  font-size: 18px;
+}
+
+.container article span{
+  font-size: 14px;
+}
+
+.container .single_doc_container{
+  margin: 1rem;
+}
+
+.container .single_doc_container h1{
+  text-align: center;
+}

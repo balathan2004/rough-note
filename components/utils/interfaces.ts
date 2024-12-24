@@ -8,7 +8,7 @@ export interface userInterface {
   email: string;
   profile_url: string;
   uid: string;
-  createdAt: string;
+  createdAt: number;
 }
 
 export interface docInterface {
@@ -20,9 +20,13 @@ export interface docInterface {
 }
 
 export interface UserCredResponse extends ResponseConfig {
-  credentials: userInterface;
+  credentials: userInterface |null;
 }
 
 export interface docResponse extends ResponseConfig {
   docData: docInterface[];
+}
+
+export interface singleDocResponse extends ResponseConfig {
+  docData: docInterface |null;
 }

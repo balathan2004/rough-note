@@ -28,9 +28,9 @@ export default function DrawerAppBar() {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+    <Box  className="nav" onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        Rough Note
+        <Link href="/">Rough Note</Link>
       </Typography>
       <Divider />
       <List>
@@ -48,7 +48,7 @@ export default function DrawerAppBar() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex" }} className="nav">
       <CssBaseline />
       <AppBar component="nav">
         <Toolbar>
@@ -66,14 +66,12 @@ export default function DrawerAppBar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
-            Rough Note
+            <Link href="/">Rough Note</Link>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {dirs.map((item) => (
               <Link href={item.path} key={item.name}>
-                <Button  sx={{ color: "#fff" }}>
-                  {item.name}
-                </Button>
+                <Button sx={{ color: "#fff" }}>{item.name}</Button>
               </Link>
             ))}
           </Box>

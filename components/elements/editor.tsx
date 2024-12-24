@@ -4,6 +4,7 @@ import {
   ResponseConfig,
   userInterface,
 } from "../utils/interfaces";
+import ReplyIcon from "@mui/icons-material/Reply";
 import { TextField, Button } from "@mui/material";
 import styles from "@/styles/Home.module.css";
 import moment from "moment";
@@ -77,6 +78,23 @@ export default function Editor({
     }
   };
 
+  const copyToClipBoard = () => {
+    // Ensure the Clipboard API is available
+    if (navigator.clipboard) {
+      const url = `http://localhost:3000/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`;
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          console.log("URL copied to clipboard successfully!");
+          setReply("Copied to ClipBoard");
+        })
+        .catch((err) => {
+          console.error("Failed to copy to clipboard: ", err);
+        });
+    } else {
+      console.error("Clipboard API is not supported on this browser.");
+    }
+  };
   const handleSubmit = async () => {
     const newData: docInterface = {
       ...mainData,
@@ -161,6 +179,11 @@ export default function Editor({
           ? `created ${moment(docData.doc_created).fromNow()}`
           : ""}
       </span>
+      <ReplyIcon className={styles.share_icon}
+        onClick={copyToClipBoard}
+        fontSize="large"
+        sx={{ transform: "scaleX(-1)" }}
+      />
       <div className={styles.btn_container}>
         <Button
           className={styles.button}

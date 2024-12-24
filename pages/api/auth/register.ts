@@ -27,7 +27,7 @@ export default async function handler(
       display_name:userData.displayName?userData.displayName:generateUsername(emailSplit, 3, 20, "user-"),
       profile_url: userData.photoURL?userData.photoURL:`https://ui-avatars.com/api/?name=${emailSplit}`,
       uid: userData.uid,
-      createdAt: userData.metadata.creationTime || "",
+      createdAt: new Date().getTime(),
     };
 
     await setDoc(doc(firestore,'users',userDoc.uid),userDoc)

@@ -8,7 +8,7 @@ export const NavInit = [
 ];
 export const NavUsers = [
   { name: "Home", path: "/home" },
-  { name: "Search", path: "/search" },
+  { name: "Get Note", path: "/get_doc" },
   { name: "About", path: "/about" },
   { name: "Account", path: "/account" },
 ];

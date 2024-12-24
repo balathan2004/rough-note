@@ -1,0 +1,45 @@
+.index_page ,.about_page{
+    padding: 2rem;
+    width: 70%;
+    margin: auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  .index_page .one{
+    padding-top: 1rem;
+  }
+
+
+  .index_page h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  
+  .index_page p , .about_page p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-top: 1rem;
+  }
+
+  .index_page ul , .about_page ul{
+    list-style: none;
+    padding: 0;
+    font-size: 18px;
+  }
+
+  .index_page ul >li , .about_page ul >li{
+    padding: 1rem 0;
+  }
+  
+  .cta_message {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 30px;
+  }
+
+  @media(max-width:700px){
+    .index_page{
+      width: 90%;
+    }
+  }
+  

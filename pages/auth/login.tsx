@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import SendData from "@/components/SendData";
+import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 import { TextField } from "@mui/material";
