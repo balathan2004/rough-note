@@ -22,7 +22,7 @@ const SignUp: FC = () => {
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await SendData({ route: "/api/register", data: userData });
+    const response = await SendData({ route: "/api/auth/register", data: userData });
     setError(response.message);
     setReply(response.message);
     if (response.status == 200) {
