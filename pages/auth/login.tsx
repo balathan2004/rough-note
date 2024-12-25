@@ -1,11 +1,16 @@
 import React, { FC, useState } from "react";
-import SendData from "@/components/utils/SendData";
+import AuthSendData from "@/components/utils/auth_send_data";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 import { Button, TextField } from "@mui/material";
 import { useReplyContext } from "@/components/context/reply_context";
 import Link from "next/link";
-
+import { useLoadingContext } from "@/components/context/loadingWrapper";
+import { useUserContext } from "@/components/context/user_wrapper";
+import {
+  useNavbarContext,
+  NavUsers,
+} from "@/components/context/navbar_wrapper";
 const Login: FC = () => {
   const [userData, setUserData] = useState({
     email: "",
@@ -13,7 +18,10 @@ const Login: FC = () => {
   });
   const router = useRouter();
   const [error, setError] = useState("");
-  const {setReply}=useReplyContext()
+  const { setReply } = useReplyContext();
+  const { setLoading } = useLoadingContext();
+  const { setUserCred } = useUserContext();
+  const { setDirs } = useNavbarContext();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -22,15 +30,23 @@ const Login: FC = () => {
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await SendData({
+    if (!userData.email && !userData.password) {
+      console.log("Enter Details");
+      return;
+    }
+    setLoading(true);
+    const response = await AuthSendData({
       route: "/api/auth/login",
       data: userData,
     });
+    setLoading(false);
     setError(response.message);
-    setReply(response.message)
+    setReply(response.message);
 
     if (response.status == 200) {
-      router.push("/home");
+      setDirs(NavUsers);
+      setUserCred(response.credentials);
+      router.push("/account");
     }
   };
 

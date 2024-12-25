@@ -2,10 +2,12 @@ import React, { FC, useState } from "react";
 import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { TextField, Button } from "@mui/material";
+import { useLoadingContext } from "@/components/context/loadingWrapper";
 
 const ResetPassword: FC = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const { setLoading } = useLoadingContext();
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -14,10 +16,13 @@ const ResetPassword: FC = () => {
       return;
     }
 
+    setLoading(true);
+
     const response = await SendData({
       route: `/api/auth/reset_password?email=${email}`,
       data: { email: email },
     });
+    setLoading(false);
     if (response) {
       setError(response.message);
     }
@@ -32,7 +37,7 @@ const ResetPassword: FC = () => {
           <form onSubmit={handleForm}>
             <div>
               <label>Enter Email</label>
-               <TextField
+              <TextField
                 fullWidth
                 name="email"
                 required
@@ -40,8 +45,7 @@ const ResetPassword: FC = () => {
                 id="outlined-basic"
                 onChange={(event) => setEmail(event.target.value)}
                 type="email"
-              ></TextField> 
-          
+              ></TextField>
             </div>
             <Button
               className={styles.forget_btn}

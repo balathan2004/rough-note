@@ -7,7 +7,6 @@ import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
 import ShortUniqueId from "short-unique-id";
 import { Button } from "@mui/material";
-import { add } from "lodash";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 interface Props {
   data: docInterface[];

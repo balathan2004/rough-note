@@ -10,7 +10,8 @@ import styles from "@/styles/Home.module.css";
 import moment from "moment";
 import lodash from "lodash";
 import { useReplyContext } from "../context/reply_context";
-
+import { useLoadingContext } from "../context/loadingWrapper";
+import SendData from "../utils/SendData";
 interface Props {
   docData: docInterface;
   userData: userInterface;
@@ -29,7 +30,7 @@ export default function Editor({
   const [docText, setDocText] = useState(docData.doc_text);
   const { setReply } = useReplyContext();
 
-
+  const { setLoading } = useLoadingContext();
 
   const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -54,19 +55,16 @@ export default function Editor({
 
   const deleteDoc = async () => {
     const data = { uid: userData.uid, doc_id: mainData.doc_id };
-    const response = await fetch("/api/docs/delete_doc", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
+    setLoading(true);
+
+    const response = await SendData({
+      data: data,
+      route: "/api/docs/delete_doc",
     });
-
-    const res = (await response.json()) as ResponseConfig;
-
-    if (res) {
-      setReply(res.message);
-      if (res.status == 200) {
+    setLoading(false);
+    if (response) {
+      setReply(response.message);
+      if (response.status == 200) {
         updateData((prev) => {
           const filtered = prev.filter(
             (item) => item.doc_id !== mainData.doc_id
@@ -105,21 +103,19 @@ export default function Editor({
       doc_name: docTitle,
     };
 
-    console.log(newData)
+    console.log(newData);
 
-    if (!lodash.isEqual(mainData, newData)&&userData) {
-      const response = await fetch("/api/docs/update_doc", {
-        body: JSON.stringify(newData),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    if (!lodash.isEqual(mainData, newData) && userData) {
+      setLoading(true);
+
+      const response = await SendData({
+        data: newData,
+        route: "/api/docs/update_doc",
       });
 
-      const res = (await response.json()) as ResponseConfig;
-
-      if (res) {
-        setReply(res.message);
+      if (response) {
+        setLoading(false);
+        setReply(response.message);
         setMainData(newData);
         updateData((prev) => {
           const filtered = prev.filter(
@@ -132,7 +128,6 @@ export default function Editor({
           ];
         });
       }
-     
     } else {
       setReply("no changes made");
     }

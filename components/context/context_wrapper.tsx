@@ -4,6 +4,7 @@ import { UserCredResponse } from "../utils/interfaces";
 import { useNavbarContext, NavUsers } from "./navbar_wrapper";
 import ReplyPopUp from "../elements/replyPopup";
 import DrawerAppBar from "../elements/navbar";
+import LoadingProgress from "../elements/loading";
 
 const ContextWrapper: FC<{ children: ReactNode }> = ({ children }) => {
   const { setDirs } = useNavbarContext();
@@ -11,29 +12,25 @@ const ContextWrapper: FC<{ children: ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     async function getCred() {
-      console.log("started");
       const response = await fetch(`/api/auth/login_cred`, {
         method: "GET",
         credentials: "include",
       });
 
-      const res = await response.json() as UserCredResponse;
-      console.log(res);
+      const res = (await response.json()) as UserCredResponse;
       if (res && res.status == 200) {
-        console.log("setting");
         setDirs(NavUsers);
-        console.log("setted nav");
         setUserCred(res.credentials);
       }
     }
-    getCred()
+    getCred();
   }, []);
 
   return (
     <>
       <ReplyPopUp />
       <DrawerAppBar />
-
+      <LoadingProgress />
       {children}
     </>
   );

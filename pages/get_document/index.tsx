@@ -16,33 +16,34 @@ export default function GetDoc() {
     if (!router.isReady) return;
 
     const getDocument = async () => {
-      console.log(router.query); // Debugging: Check if query params are available
+      console.log(router.query);
       if (!doc_name) {
-        console.log('doc name missing');
+        console.log("doc name missing");
         return;
       }
 
       try {
-        // Example logic to fetch document data
         const response = await fetch(
-          `/api/docs/get_single_doc?doc_name=${doc_name}`
+          `/api/docs/get_single_doc?doc_name=${doc_name}`,
+          {
+            method: "GET",
+          }
         );
-        //(`/api/docs/get_single_doc?doc_name=${docName}
 
-        const res = await response.json() as singleDocResponse;
+        const res = (await response.json()) as singleDocResponse;
         if (res) {
           setReply(res.message);
-          if(res.status=200){
-            setDocData(res.docData)
+          if ((res.status = 200)) {
+            setDocData(res.docData);
           }
         }
       } catch (error) {
-        console.error('Failed to fetch document:', error);
+        console.error("Failed to fetch document:", error);
       }
     };
 
     getDocument();
-  }, [ doc_name]);
+  }, [doc_name]);
 
   return (
     <div className="container">

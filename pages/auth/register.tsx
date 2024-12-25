@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button, TextField } from "@mui/material";
 import { useReplyContext } from "@/components/context/reply_context";
-
+import { useLoadingContext } from "@/components/context/loadingWrapper";
 const SignUp: FC = () => {
   const [userData, setUserData] = useState({
     email: "",
@@ -14,6 +14,7 @@ const SignUp: FC = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const { setReply } = useReplyContext();
+  const {setLoading}=useLoadingContext()
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -22,11 +23,17 @@ const SignUp: FC = () => {
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if(!userData.email&&!userData.password){
+      console.log("Enter Details");
+      return;
+    }
+    setLoading(true)
     const response = await SendData({ route: "/api/auth/register", data: userData });
+    setLoading(false)
     setError(response.message);
     setReply(response.message);
     if (response.status == 200) {
-      router.push("/home");
+      router.push("/auth/login");
     }
   };
 
