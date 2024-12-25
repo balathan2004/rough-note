@@ -7,6 +7,7 @@ import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
 import ShortUniqueId from "short-unique-id";
 import { Button } from "@mui/material";
+import { add } from "lodash";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 interface Props {
   data: docInterface[];
@@ -15,14 +16,16 @@ interface Props {
 const Home: FC<Props> = ({ data }) => {
   const [newData, setNewData] = useState<docInterface[]>(data);
   const { userCred } = useUserContext();
-  const [currentDocId, setCurrentDocId] = useState(data[0].doc_id);
-  const [currentDoc, setCurrentDoc] = useState(data[0]);
+  const [currentDocId, setCurrentDocId] = useState(data?.[0]?.doc_id || "");
+  const [currentDoc, setCurrentDoc] = useState(data?.[0] || null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
 
   useEffect(() => {
     if (currentDocId) {
-      const findDoc = newData.filter((item) => item.doc_id === currentDocId);
-      setCurrentDoc(findDoc[0]);
+      const findDoc = newData.find((item) => item.doc_id === currentDocId);
+      if (findDoc) {
+        setCurrentDoc(findDoc);
+      }
     }
   }, [currentDocId]);
 
@@ -45,10 +48,16 @@ const Home: FC<Props> = ({ data }) => {
     setCurrentDocId(createNewNote.doc_id);
   };
 
+  useEffect(() => {
+    if (data.length == 0) {
+      addDoc();
+    }
+  }, [data]);
+
   return (
     <div className="container">
       <div className={styles.home_container}>
-        {userCred ? (
+        {userCred && currentDoc && newData ? (
           <>
             <div className={styles.notes}>
               <h1 className={styles.your_notes}>Your Notes</h1>
@@ -98,7 +107,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const url=process.env.NODE_ENV=="production"?`${process.env.production_domain}`:"http://localhost:3000"
+  const url =
+    process.env.NODE_ENV == "production"
+      ? `${process.env.production_domain}`
+      : "http://localhost:3000";
 
   const response = await fetch(`${url}/api/docs/get_docs`, {
     method: "POST",
@@ -111,7 +123,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      data: responseJson.docData,
+      data: responseJson.docData || [],
     },
   };
 }

@@ -29,7 +29,7 @@ export default function Editor({
   const [docText, setDocText] = useState(docData.doc_text);
   const { setReply } = useReplyContext();
 
-  console.log("triiggerr", setTrigger);
+
 
   const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -105,9 +105,9 @@ export default function Editor({
       doc_name: docTitle,
     };
 
-    if (lodash.isEqual(mainData, newData)) {
-      setReply("no changes made");
-    } else {
+    console.log(newData)
+
+    if (!lodash.isEqual(mainData, newData)&&userData) {
       const response = await fetch("/api/docs/update_doc", {
         body: JSON.stringify(newData),
         method: "POST",
@@ -132,11 +132,13 @@ export default function Editor({
           ];
         });
       }
+     
+    } else {
+      setReply("no changes made");
     }
   };
 
   useEffect(() => {
-    console.log("value changed to", docData);
     setMainData(docData);
     setDocTitle(docData.doc_name);
     setDocText(docData.doc_text);

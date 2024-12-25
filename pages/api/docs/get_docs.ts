@@ -15,7 +15,7 @@ export default async function handler(
     const checkDoc=await getDoc(docRef)
     if (!checkDoc.exists()) {
       console.log("docs isnt")
-      res.json({ message: "John Doe", status: 300, docData: [] });
+      res.json({ message: "John Doe", status: 200, docData: [] });
       return;
     }
     console.log("doc is avali")
