@@ -80,8 +80,11 @@ export default function Editor({
 
   const copyToClipBoard = () => {
     // Ensure the Clipboard API is available
+    const url =
+      process.env.NODE_ENV == "production"
+        ? `${process.env.production_domain}/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`
+        : `http://localhost:3000/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`;
     if (navigator.clipboard) {
-      const url = `http://localhost:3000/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`;
       navigator.clipboard
         .writeText(url)
         .then(() => {
@@ -179,7 +182,8 @@ export default function Editor({
           ? `created ${moment(docData.doc_created).fromNow()}`
           : ""}
       </span>
-      <ReplyIcon className={styles.share_icon}
+      <ReplyIcon
+        className={styles.share_icon}
         onClick={copyToClipBoard}
         fontSize="large"
         sx={{ transform: "scaleX(-1)" }}
