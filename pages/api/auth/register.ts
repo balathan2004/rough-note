@@ -15,6 +15,7 @@ export default async function handler(
 ) {
   try {
     const { email, password } = req.body;
+      const isSecure =process.env.NODE_ENV=="production"
 
     const userData = (
       await createUserWithEmailAndPassword(auth, email, password)
@@ -38,8 +39,9 @@ export default async function handler(
       req: req,
       res: res,
       maxAge: 9000000,
-      httpOnly: false,
+      httpOnly: true,
       sameSite: "none",
+      secure:isSecure
     });
 
     res.json({ status: 200, message: "Login Successful" });

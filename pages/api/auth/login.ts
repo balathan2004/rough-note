@@ -10,6 +10,9 @@ export default async function handler(
   res: NextApiResponse<ResponseConfig>
 ) {
   try {
+
+    const isSecure =process.env.NODE_ENV=="production"
+
     const { email, password } = req.body;
 
     const userID = (await signInWithEmailAndPassword(auth, email, password))
@@ -19,8 +22,9 @@ export default async function handler(
       req: req,
       res: res,
       maxAge: 2592000000,
-      httpOnly: false,
+      httpOnly: true,
       sameSite: "none",
+      secure:isSecure
     });
 
     res.json({ status: 200, message: "Login Successful" });
