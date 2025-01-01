@@ -80,7 +80,7 @@ export default function Editor({
     // Ensure the Clipboard API is available
     const url =
       process.env.NODE_ENV == "production"
-        ? `${process.env.production_domain}/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`
         : `http://localhost:3000/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`;
     if (navigator.clipboard) {
       navigator.clipboard
