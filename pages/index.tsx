@@ -2,6 +2,10 @@ import React from "react";
 import styles from "@/styles/about.module.css";
 
 const AboutPage = () => {
+
+  console.log(process.env.production_domain,"domain")
+
+
   return (
     <div className="container">
       <div className={styles.index_page}>
