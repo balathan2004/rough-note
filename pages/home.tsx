@@ -108,7 +108,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const url =
     process.env.NODE_ENV == "production"
-      ? `${process.env.prod_domain}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}`
       : "http://localhost:3000";
 
   const response = await fetch(`${url}/api/docs/get_docs`, {
