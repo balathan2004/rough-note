@@ -99,7 +99,7 @@ export default function Editor({
   const handleSubmit = async () => {
     const newData: docInterface = {
       ...mainData,
-      doc_text: docText ? docText : "untitled",
+      doc_text: docText ? docText : "title",
       doc_name: docTitle,
     };
 
@@ -149,6 +149,7 @@ export default function Editor({
         className={styles.input_title}
         multiline
         onChange={handleInput}
+           placeholder="title"
         slotProps={{
           input: {
             style: {
@@ -159,6 +160,7 @@ export default function Editor({
         value={docTitle}
       ></TextField>{" "}
       <TextField
+      placeholder="content"
         name="doc_text"
         fullWidth
         variant="standard"

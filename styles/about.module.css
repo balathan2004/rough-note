@@ -28,7 +28,7 @@
   }
 
   .index_page ul >li , .about_page ul >li{
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
   
   .cta_message {

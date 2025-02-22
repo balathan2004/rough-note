@@ -19,7 +19,7 @@ const Login: FC = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const { setReply } = useReplyContext();
-  const { setLoading } = useLoadingContext();
+  const { loading, setLoading } = useLoadingContext();
   const { setUserCred } = useUserContext();
   const { setDirs } = useNavbarContext();
 
@@ -83,8 +83,13 @@ const Login: FC = () => {
             </div>
             <Link href="/auth/reset_password">forget password ??</Link>
             <Link href="/auth/register">create account -&gt; </Link>
-            <Button fullWidth type="submit" variant="outlined">
-              Login
+            <Button
+              disabled={loading}
+              fullWidth
+              type="submit"
+              variant="outlined"
+            >
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </article>

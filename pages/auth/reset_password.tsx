@@ -3,11 +3,12 @@ import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { TextField, Button } from "@mui/material";
 import { useLoadingContext } from "@/components/context/loadingWrapper";
+import Link from "next/link";
 
 const ResetPassword: FC = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const { setLoading } = useLoadingContext();
+  const { loading,setLoading } = useLoadingContext();
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,9 +53,11 @@ const ResetPassword: FC = () => {
               fullWidth
               type="submit"
               variant="outlined"
+              disabled={loading}
             >
-              Send Password Reset Mail
+              {loading ? "Sending mail" : "Send Password Reset Mail"}
             </Button>
+            <Link href="/auth/login">Login here</Link>
           </form>
         </article>
       </div>

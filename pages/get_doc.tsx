@@ -18,16 +18,22 @@ export default function GETDOC() {
     event.preventDefault();
     if (!docName) console.log("doc name missing");
 
-    const response = await fetch(`/api/docs/get_single_doc?doc_name=${docName}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      `/api/docs/get_single_doc?doc_name=${docName.replace(
+        `${process.env.NEXT_PUBLIC_API_URL}/get_document?doc_name=SpeoUNRZ3kWDGdWK6CB7biscpRz1@lE2JrZnW39Wy`,
+        ""
+      )}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
-    const res = await response.json() as singleDocResponse;
+    const res = (await response.json()) as singleDocResponse;
     if (res) {
       setReply(res.message);
-      if(res.status=200){
-        setDocData(res.docData)
+      if ((res.status = 200)) {
+        setDocData(res.docData);
       }
     }
   };
@@ -36,21 +42,22 @@ export default function GETDOC() {
     <div className="container">
       <div className={styles.container}>
         <div>
-        <form onSubmit={handleSubmit}>
-          <h1>Get Document</h1>
-          <label>Enter Document Name</label>
-          <TextField className={styles.input}
-            fullWidth
-            placeholder="Enter Doc Name"
-            onChange={handleInput}
-            multiline={false}
-          />
-          <Button type="submit" fullWidth variant="outlined">
-            Fetch
-          </Button>
-        </form>
-        {docData ? <ReadOnlyCard data={docData} /> : null}
-      </div>
+          <form onSubmit={handleSubmit}>
+            <h1>Get Document</h1>
+            <label>Enter Document Name</label>
+            <TextField
+              className={styles.input}
+              fullWidth
+              placeholder="Enter Doc Name"
+              onChange={handleInput}
+              multiline={false}
+            />
+            <Button type="submit" fullWidth variant="outlined">
+              Fetch
+            </Button>
+          </form>
+          {docData ? <ReadOnlyCard data={docData} /> : null}
+        </div>
       </div>
     </div>
   );

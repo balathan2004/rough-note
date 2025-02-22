@@ -14,7 +14,7 @@ const SignUp: FC = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const { setReply } = useReplyContext();
-  const {setLoading}=useLoadingContext()
+  const { loading, setLoading } = useLoadingContext();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -23,13 +23,16 @@ const SignUp: FC = () => {
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if(!userData.email&&!userData.password){
+    if (!userData.email && !userData.password) {
       console.log("Enter Details");
       return;
     }
-    setLoading(true)
-    const response = await SendData({ route: "/api/auth/register", data: userData });
-    setLoading(false)
+    setLoading(true);
+    const response = await SendData({
+      route: "/api/auth/register",
+      data: userData,
+    });
+    setLoading(false);
     setError(response.message);
     setReply(response.message);
     if (response.status == 200) {
@@ -65,12 +68,17 @@ const SignUp: FC = () => {
                 placeholder="Your Password"
                 multiline={false}
                 onChange={handleInput}
-                type="text" 
+                type="text"
               ></TextField>
             </div>
             <Link href="/auth/login">already have an account </Link>
-            <Button fullWidth type="submit" variant="outlined">
-              Sign up
+            <Button
+              disabled={loading}
+              fullWidth
+              type="submit"
+              variant="outlined"
+            >
+              {loading ? "Registering" : "Register"}
             </Button>
           </form>
         </article>
