@@ -17,12 +17,11 @@ export default function GETDOC() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!docName) console.log("doc name missing");
-
+    const extractedDocName = docName.includes("get_document?doc_name=")
+      ? docName.split("get_document?doc_name=")[1]
+      : docName;
     const response = await fetch(
-      `/api/docs/get_single_doc?doc_name=${docName.replace(
-        `${process.env.NEXT_PUBLIC_API_URL}/get_document?doc_name=SpeoUNRZ3kWDGdWK6CB7biscpRz1@lE2JrZnW39Wy`,
-        ""
-      )}`,
+      `/api/docs/get_single_doc?doc_name=${extractedDocName}`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -41,7 +40,7 @@ export default function GETDOC() {
   return (
     <div className="container">
       <div className={styles.container}>
-        <div>
+        <div className={styles.inner_container}>
           <form onSubmit={handleSubmit}>
             <h1>Get Document</h1>
             <label>Enter Document Name</label>
@@ -51,6 +50,7 @@ export default function GETDOC() {
               placeholder="Enter Doc Name"
               onChange={handleInput}
               multiline={false}
+              required
             />
             <Button type="submit" fullWidth variant="outlined">
               Fetch

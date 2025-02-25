@@ -3,22 +3,28 @@
   padding-top: 1rem;
   height: calc(100vh - 80px); /* Ensure it takes full available height */
   justify-content: center;
+  flex-direction: row;
   gap: 10%;
   position: relative;
   height: fit-content;
   width: 100%;
 }
 
+
+.home_container .wrapper{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .home_container .notes {
   padding: 0 1%;
-  width: 80%;
+  width: 40%;
 }
 
 .home_container .editor {
   width: 40%;
   margin-top: 1rem;
-  right: 0;
-  position: fixed;
 }
 
 .home_container .notes .your_notes {
@@ -139,7 +145,7 @@
 
 
 @media (max-width: 700px) {
-  .home_container {
+  .home_container .wrapper {
     flex-direction: column;
     gap: 2rem;
   }

@@ -10,14 +10,14 @@ export default async function (
   const doc_name: string = req.query.doc_name as string;
 
   if (!doc_name) {
-    res.json({ status: 300, message: "error", docData: null });
+    res.json({ status: 300, message: "Doc id missing", docData: null });
     return;
   }
 
   const [uid, doc_id] = doc_name.split("@");
-  console.log(uid,doc_id)
+  console.log(uid, doc_id);
 
-  if (!uid && !doc_id) {
+  if (!uid || !doc_id) {
     res.json({ status: 300, message: "error", docData: null });
     return;
   }
@@ -25,20 +25,20 @@ export default async function (
   const docRef = await getDoc(doc(firestore, "documents", uid));
 
   if (!docRef.exists()) {
-    res.json({ status: 300, message: "error", docData: null });
+    res.json({ status: 300, message: "Document doesnt exist", docData: null });
     return;
   }
 
-  const docData = (docRef.data().data as  docInterface[]) || null;
+  const docData = (docRef.data().data as docInterface[]) || null;
 
-  if (docData.length<0) {
-    res.json({ status: 300, message: "error", docData: null });
+  if (docData.length < 0) {
+    res.json({ status: 300, message: "Document doesnt exist", docData: null });
     return;
   }
-  const findDoc=docData.find(item=>item.doc_id==doc_id) ||null
+  const findDoc = docData.find((item) => item.doc_id == doc_id) || null;
 
   if (!findDoc) {
-    res.json({ status: 300, message: "error", docData: null });
+    res.json({ status: 300, message: "Document not found", docData: null });
     return;
   }
 

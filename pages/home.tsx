@@ -57,7 +57,7 @@ const Home: FC<Props> = ({ data }) => {
     <div className="container">
       <div className={styles.home_container}>
         {userCred && currentDoc && newData ? (
-          <>
+          <div className={styles.wrapper}>
             <div className={styles.notes}>
               <h1 className={styles.your_notes}>Your Notes</h1>
               <div className={styles.doc_container}>
@@ -82,7 +82,7 @@ const Home: FC<Props> = ({ data }) => {
                 setTrigger={setDeletedTrigger}
               />
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </div>
