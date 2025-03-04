@@ -10,8 +10,7 @@
   width: 100%;
 }
 
-
-.home_container .wrapper{
+.home_container .wrapper {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -49,8 +48,7 @@
   font-size: 24px;
 }
 
-
-.home_container .editor .share_icon{
+.home_container .editor .share_icon {
   cursor: pointer;
 }
 
@@ -62,8 +60,14 @@
 
 .home_container .editor .button {
   width: 30%;
-  margin:1rem 1rem 0 0;
+  margin: 1rem 1rem 0 0;
+}
 
+.home_container .editor .char_limit_span {
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  text-align: right;
 }
 
 .doc_container {
@@ -72,7 +76,8 @@
   justify-content: center;
 }
 
-.doc_container .articlePressable , .doc_container .articlePressable_active {
+.doc_container .articlePressable,
+.doc_container .articlePressable_active {
   max-width: 500px;
   margin: 1rem;
   cursor: pointer;
@@ -80,24 +85,26 @@
   border-radius: 10px;
   border: 0.5px solid gray;
   background-color: rgb(170, 203, 216);
-  
 }
 
-.doc_container .articlePressable_active{
+.doc_container .articlePressable_active {
   background-color: rgb(220, 220, 220);
 }
 
- .doc_container .articlePressable h1 ,.doc_container .articlePressable_active h1 {
+.doc_container .articlePressable h1,
+.doc_container .articlePressable_active h1 {
   font-size: 22px;
   font-weight: 600;
 }
 
-.doc_container .articlePressable p , .doc_container .articlePressable_active p{
+.doc_container .articlePressable p,
+.doc_container .articlePressable_active p {
   font-size: 18px;
   margin: 0.2rem 0;
 }
 
-.doc_container .articlePressable span , .doc_container .articlePressable_active p {
+.doc_container .articlePressable span,
+.doc_container .articlePressable_active p {
   font-size: 14px;
   line-height: 35px;
 }
@@ -111,14 +118,13 @@
   display: flex;
   justify-content: center;
   height: calc(100vh - 80px);
-
 }
 
-.account article{
+.account article {
   margin-top: 2rem;
 }
 
-.account article h1{
+.account article h1 {
   margin: 2rem;
 }
 
@@ -136,13 +142,10 @@
   margin: 1rem 0;
 }
 
-.account .img_container img{
+.account .img_container img {
   height: 75px;
   border-radius: 50%;
 }
-
-
-
 
 @media (max-width: 700px) {
   .home_container .wrapper {
@@ -163,7 +166,8 @@
     position: relative;
   }
 
-  .home_container .editor h1 , .home_container .notes h1 {
+  .home_container .editor h1,
+  .home_container .notes h1 {
     text-align: center;
   }
 
@@ -184,7 +188,8 @@
 
   .home_container .editor .input,
   .home_container .editor .input_title,
-  .doc_container .articlePressable p ,   .doc_container .articlePressable_active p {
+  .doc_container .articlePressable p,
+  .doc_container .articlePressable_active p {
     font-size: 20px;
     width: 100%;
   }

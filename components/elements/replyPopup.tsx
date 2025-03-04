@@ -14,7 +14,7 @@ export default function ReplyPopUp() {
     <Snackbar
       open={!!reply}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
       message={reply}
       onClose={handleClose}
     />

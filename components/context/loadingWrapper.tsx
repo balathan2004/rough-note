@@ -21,7 +21,6 @@ const LoadingHolder: FC<Props> = ({ children }) => {
 
   return (
     <LoadingContext.Provider value={{ loading, setLoading }}>
-      
       {children}
     </LoadingContext.Provider>
   );

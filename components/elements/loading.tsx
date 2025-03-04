@@ -9,7 +9,7 @@ export default function LoadingProgress() {
     if (loading) {
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 10000);
+      }, 20000);
 
       return () => clearTimeout(timer);
     }

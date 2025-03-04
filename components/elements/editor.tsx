@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  docInterface,
-  ResponseConfig,
-  userInterface,
-} from "../utils/interfaces";
+import { docInterface, userInterface } from "../utils/interfaces";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { TextField, Button } from "@mui/material";
 import styles from "@/styles/Home.module.css";
@@ -37,10 +33,10 @@ export default function Editor({
   ) => {
     const { name, value } = event.target;
 
-    if (name == "doc_text") {
-      setDocText(value);
-    } else {
-      setDocTitle(value);
+    if (name === "doc_text") {
+      setDocText(value.slice(0, 1000)); // Limit docText to 1000 characters
+    } else if (name === "doc_title") {
+      setDocTitle(value.slice(0, 100)); // Limit docTitle to 100 characters
     }
   };
 
@@ -76,67 +72,57 @@ export default function Editor({
     }
   };
 
-  const copyToClipBoard = () => {
-    // Ensure the Clipboard API is available
+  const copyToClipBoard = async () => {
     const url =
       process.env.NODE_ENV == "production"
         ? `${process.env.NEXT_PUBLIC_API_URL}/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`
         : `http://localhost:3000/get_document?doc_name=${mainData.uid}@${mainData.doc_id}`;
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(url)
-        .then(() => {
-          console.log("URL copied to clipboard successfully!");
-          setReply("Copied to ClipBoard");
-        })
-        .catch((err) => {
-          console.error("Failed to copy to clipboard: ", err);
-        });
-    } else {
-      console.error("Clipboard API is not supported on this browser.");
+    try {
+      await navigator.clipboard.writeText(url);
+      setReply("Copied to Clipboard");
+    } catch (err) {
+      setReply("Failed to copy");
     }
   };
+
   const handleSubmit = async () => {
-    const newData: docInterface = {
-      ...mainData,
-      doc_text: docText ? docText : "title",
-      doc_name: docTitle,
-    };
+    if (
+      docTitle === mainData.doc_name &&
+      docText === mainData.doc_text &&
+      userData
+    ) {
+      setReply("No changes made");
+      return;
+    }
+    setLoading(true);
+    const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
 
-    console.log(newData);
+    const response = await SendData({
+      data: newData,
+      route: "/api/docs/update_doc",
+    });
 
-    if (!lodash.isEqual(mainData, newData) && userData) {
-      setLoading(true);
+    if (response) {
+      setLoading(false);
+      setReply(response.message);
+      setMainData(newData);
+      updateData((prev) => {
+        const filtered = prev.filter((item) => item.doc_id !== mainData.doc_id);
 
-      const response = await SendData({
-        data: newData,
-        route: "/api/docs/update_doc",
+        return [
+          ...filtered,
+          { ...mainData, doc_name: docTitle, doc_text: docText },
+        ];
       });
-
-      if (response) {
-        setLoading(false);
-        setReply(response.message);
-        setMainData(newData);
-        updateData((prev) => {
-          const filtered = prev.filter(
-            (item) => item.doc_id !== mainData.doc_id
-          );
-
-          return [
-            ...filtered,
-            { ...mainData, doc_name: docTitle, doc_text: docText },
-          ];
-        });
-      }
-    } else {
-      setReply("no changes made");
     }
   };
 
   useEffect(() => {
-    setMainData(docData);
-    setDocTitle(docData.doc_name);
-    setDocText(docData.doc_text);
+    if (!lodash.isEqual(mainData, docData)) {
+      setMainData(docData);
+      setDocTitle(docData.doc_name);
+      setDocText(docData.doc_text);
+    }
   }, [docData]);
 
   return (
@@ -149,7 +135,7 @@ export default function Editor({
         className={styles.input_title}
         multiline
         onChange={handleInput}
-           placeholder="title"
+        placeholder="title"
         slotProps={{
           input: {
             style: {
@@ -158,9 +144,12 @@ export default function Editor({
           },
         }}
         value={docTitle}
-      ></TextField>{" "}
+      ></TextField>
+      <span className={styles.char_limit_span}>
+        {docTitle.length}/100 characters
+      </span>
       <TextField
-      placeholder="content"
+        placeholder="content"
         name="doc_text"
         fullWidth
         variant="standard"
@@ -176,6 +165,9 @@ export default function Editor({
           },
         }}
       ></TextField>
+      <span className={styles.char_limit_span}>
+        {docText.length}/1000 characters
+      </span>
       <span>
         {docData.doc_created != 0
           ? `created ${moment(docData.doc_created).fromNow()}`
@@ -192,6 +184,12 @@ export default function Editor({
           className={styles.button}
           onClick={handleSubmit}
           variant="contained"
+          disabled={
+            docTitle.trim().length === 0 ||
+            docText.trim().length === 0 ||
+            (docTitle.trim() === mainData.doc_name &&
+              docText.trim() === mainData.doc_text)
+          }
         >
           Save
         </Button>
