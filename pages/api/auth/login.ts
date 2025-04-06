@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse<UserCredResponse>
 ) {
   try {
-    const isSecure = process.env.NODE_ENV == "production";
+    const isDev = process.env.NODE_ENV == "production";
 
     const { email, password } = req.body;
 
@@ -32,8 +32,8 @@ export default async function handler(
       res: res,
       maxAge: 2592000000,
       httpOnly: true,
-      sameSite: "none",
-      secure: isSecure,
+      sameSite: isDev ? "none" : "lax",
+      secure: isDev,
     });
 
     res.json({

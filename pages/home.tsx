@@ -2,26 +2,35 @@ import { GetServerSidePropsContext } from "next";
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
 import { useUserContext } from "@/components/context/user_wrapper";
-import { docInterface, docResponse } from "@/components/utils/interfaces";
+import {
+  docInterface,
+  docResponse,
+  wholeDoc,
+} from "@/components/utils/interfaces";
 import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
 import ShortUniqueId from "short-unique-id";
 import { Button } from "@mui/material";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
+
 interface Props {
-  data: docInterface[];
+  data: wholeDoc | null;
 }
 
 const Home: FC<Props> = ({ data }) => {
-  const [newData, setNewData] = useState<docInterface[]>(data);
+  console.log(data);
+  const [newData, setNewData] = useState<wholeDoc | null>(data);
+  const [docs, setDocs] = useState<docInterface[]>([]);
   const { userCred } = useUserContext();
-  const [currentDocId, setCurrentDocId] = useState(data?.[0]?.doc_id || "");
-  const [currentDoc, setCurrentDoc] = useState(data?.[0] || null);
+  const [currentDocId, setCurrentDocId] = useState("");
+  const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
 
   useEffect(() => {
     if (currentDocId) {
-      const findDoc = newData.find((item) => item.doc_id === currentDocId);
+      const findDoc = newData?.data.find(
+        (item) => item.doc_id === currentDocId
+      );
       if (findDoc) {
         setCurrentDoc(findDoc);
       }
@@ -29,8 +38,15 @@ const Home: FC<Props> = ({ data }) => {
   }, [currentDocId]);
 
   useEffect(() => {
+    if (docs.length > 0) {
+      setCurrentDocId(docs[0].doc_id);
+      setCurrentDoc(docs[0]);
+    }
+  }, [docs]);
+
+  useEffect(() => {
     if (deletedTrigger) {
-      setCurrentDoc(newData[0]);
+      setCurrentDoc(docs[0] || null);
       setDeletedTrigger(false);
     }
   }, [deletedTrigger]);
@@ -40,18 +56,27 @@ const Home: FC<Props> = ({ data }) => {
       doc_id: randomUUID(),
       doc_name: "Untitled",
       doc_text: "",
-      doc_created: 0,
+      doc_created: new Date().getTime(),
       uid: userCred?.uid || "",
     };
-    setNewData([...newData, createNewNote]);
+    setDocs([...docs, createNewNote]);
     setCurrentDocId(createNewNote.doc_id);
   };
 
   useEffect(() => {
-    if (data.length == 0) {
-      addDoc();
+    if (data && data.data) {
+      if (data.data && data.data.length === 0) {
+        addDoc();
+      } else {
+        setDocs(data.data);
+        setNewData(data);
+      }
     }
   }, [data]);
+
+  if (!newData) {
+    return null;
+  }
 
   return (
     <div className="container">
@@ -61,7 +86,7 @@ const Home: FC<Props> = ({ data }) => {
             <div className={styles.notes}>
               <h1 className={styles.your_notes}>Your Notes</h1>
               <div className={styles.doc_container}>
-                {newData.map((item) => (
+                {docs.map((item) => (
                   <SingleNotePressable
                     changeDoc={setCurrentDocId}
                     key={item.doc_id}
@@ -75,12 +100,14 @@ const Home: FC<Props> = ({ data }) => {
               </div>
             </div>
             <div className={styles.editor}>
-              <Editor
-                userData={userCred}
-                docData={currentDoc}
-                updateData={setNewData}
-                setTrigger={setDeletedTrigger}
-              />
+              {newData ? (
+                <Editor
+                  userData={userCred}
+                  docData={currentDoc}
+                  updateData={setNewData}
+                  setTrigger={setDeletedTrigger}
+                />
+              ) : null}
             </div>
           </div>
         ) : null}
@@ -122,7 +149,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      data: responseJson.docData || [],
+      data: responseJson.docData,
     },
   };
 }

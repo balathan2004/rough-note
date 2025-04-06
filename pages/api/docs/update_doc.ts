@@ -28,6 +28,7 @@ export default async function handler(
 
     if (!docFetched.exists()) {
       await setDoc(docRef, {
+        metadata: { lastUpdated: new Date().getTime() },
         data: [{ ...docData, doc_created: new Date().getTime() }],
       });
 
@@ -43,10 +44,14 @@ export default async function handler(
       const updatedData = fetchedData.map((doc) =>
         doc.doc_id == doc_id ? { ...doc, ...docData } : doc
       );
-      await updateDoc(docRef, { data: updatedData });
+      await updateDoc(docRef, {
+        data: updatedData,
+        metadata: { lastUpdated: new Date().getTime() },
+      });
     } else {
       await updateDoc(docRef, {
         data: arrayUnion({ ...docData, doc_created: new Date().getTime() }),
+        metadata: { lastUpdated: new Date().getTime() },
       });
     }
 

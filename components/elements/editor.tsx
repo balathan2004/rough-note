@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { docInterface, userInterface } from "../utils/interfaces";
+import { docInterface, userInterface, wholeDoc } from "../utils/interfaces";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { TextField, Button } from "@mui/material";
 import styles from "@/styles/Home.module.css";
@@ -11,7 +11,7 @@ import SendData from "../utils/SendData";
 interface Props {
   docData: docInterface;
   userData: userInterface;
-  updateData: React.Dispatch<React.SetStateAction<docInterface[]>>;
+  updateData: React.Dispatch<React.SetStateAction<wholeDoc | null>>;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -62,10 +62,15 @@ export default function Editor({
       setReply(response.message);
       if (response.status == 200) {
         updateData((prev) => {
-          const filtered = prev.filter(
+          const filtered = prev?.data.filter(
             (item) => item.doc_id !== mainData.doc_id
           );
-          return filtered;
+          return {
+            data: filtered || [],
+            metadata: {
+              lastUpdated: new Date().getTime(),
+            },
+          };
         });
         setTrigger(true);
       }
@@ -107,12 +112,19 @@ export default function Editor({
       setReply(response.message);
       setMainData(newData);
       updateData((prev) => {
-        const filtered = prev.filter((item) => item.doc_id !== mainData.doc_id);
+        const filtered = prev?.data.filter(
+          (item) => item.doc_id !== mainData.doc_id
+        );
 
-        return [
-          ...filtered,
-          { ...mainData, doc_name: docTitle, doc_text: docText },
-        ];
+        return {
+          data: [
+            ...(filtered || []),
+            { ...mainData, doc_name: docTitle, doc_text: docText },
+          ],
+          metadata: {
+            lastUpdated: new Date().getTime(),
+          },
+        };
       });
     }
   };

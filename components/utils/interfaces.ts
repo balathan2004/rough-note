@@ -16,17 +16,24 @@ export interface docInterface {
   doc_text: string;
   doc_name: string;
   uid: string;
-  doc_created:number
+  doc_created: number;
 }
 
 export interface UserCredResponse extends ResponseConfig {
-  credentials: userInterface |null;
+  credentials: userInterface | null;
 }
 
 export interface docResponse extends ResponseConfig {
-  docData: docInterface[];
+  docData: wholeDoc | null;
+}
+
+export interface wholeDoc {
+  data: docInterface[];
+  metadata: {
+    lastUpdated: number;
+  };
 }
 
 export interface singleDocResponse extends ResponseConfig {
-  docData: docInterface |null;
+  docData: docInterface | null;
 }
