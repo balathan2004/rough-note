@@ -18,7 +18,7 @@ interface Props {
 }
 
 const Home: FC<Props> = ({ data }) => {
-  console.log(data);
+
   const [newData, setNewData] = useState<wholeDoc | null>(data);
   const [docs, setDocs] = useState<docInterface[]>([]);
   const { userCred } = useUserContext();
@@ -26,16 +26,16 @@ const Home: FC<Props> = ({ data }) => {
   const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
 
+
+
   useEffect(() => {
     if (currentDocId) {
-      const findDoc = newData?.data.find(
-        (item) => item.doc_id === currentDocId
-      );
+      const findDoc = docs.find((item) => item.doc_id === currentDocId);
       if (findDoc) {
         setCurrentDoc(findDoc);
       }
     }
-  }, [currentDocId]);
+  }, [currentDocId, docs]);
 
   useEffect(() => {
     if (docs.length > 0) {
@@ -51,6 +51,17 @@ const Home: FC<Props> = ({ data }) => {
     }
   }, [deletedTrigger]);
 
+ 
+
+  useEffect(() => {
+    if (data?.data?.length === 0) {
+      addDoc();
+    } else if (data?.data) {
+      setDocs(data.data);
+      setNewData(data);
+    }
+  }, [data]);
+
   const addDoc = () => {
     const createNewNote: docInterface = {
       doc_id: randomUUID(),
@@ -62,17 +73,6 @@ const Home: FC<Props> = ({ data }) => {
     setDocs([...docs, createNewNote]);
     setCurrentDocId(createNewNote.doc_id);
   };
-
-  useEffect(() => {
-    if (data && data.data) {
-      if (data.data && data.data.length === 0) {
-        addDoc();
-      } else {
-        setDocs(data.data);
-        setNewData(data);
-      }
-    }
-  }, [data]);
 
   if (!newData) {
     return null;
