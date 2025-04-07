@@ -101,9 +101,9 @@ export default function Editor({
     }
     setLoading(true);
     const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
-
+    const timeStamp = new Date().getTime();
     const response = await SendData({
-      data: newData,
+      data: { ...newData, timeStamp },
       route: "/api/docs/update_doc",
     });
 
@@ -122,7 +122,7 @@ export default function Editor({
             { ...mainData, doc_name: docTitle, doc_text: docText },
           ],
           metadata: {
-            lastUpdated: new Date().getTime(),
+            lastUpdated: timeStamp,
           },
         };
       });

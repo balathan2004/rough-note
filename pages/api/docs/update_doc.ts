@@ -9,7 +9,7 @@ export default async function handler(
   res: NextApiResponse<ResponseConfig>
 ) {
   try {
-    const { uid, doc_name, doc_text, doc_id } = req.body;
+    const { uid, doc_name, doc_text, doc_id, timeStamp } = req.body;
     const docData = {
       uid: uid,
       doc_name: doc_name,
@@ -17,7 +17,7 @@ export default async function handler(
       doc_id: doc_id,
     };
 
-    if (!(uid || doc_name || doc_id || doc_text)) {
+    if (!(uid || doc_name || doc_id || doc_text || timeStamp)) {
       res.json({ message: "error", status: 300 });
       return;
     }
@@ -28,8 +28,8 @@ export default async function handler(
 
     if (!docFetched.exists()) {
       await setDoc(docRef, {
-        metadata: { lastUpdated: new Date().getTime() },
-        data: [{ ...docData, doc_created: new Date().getTime() }],
+        metadata: { lastUpdated: timeStamp },
+        data: [{ ...docData, doc_created: timeStamp }],
       });
 
       res.json({ message: "Document Updated", status: 200 });
@@ -46,12 +46,12 @@ export default async function handler(
       );
       await updateDoc(docRef, {
         data: updatedData,
-        metadata: { lastUpdated: new Date().getTime() },
+        metadata: { lastUpdated: timeStamp },
       });
     } else {
       await updateDoc(docRef, {
-        data: arrayUnion({ ...docData, doc_created: new Date().getTime() }),
-        metadata: { lastUpdated: new Date().getTime() },
+        data: arrayUnion({ ...docData, doc_created: timeStamp }),
+        metadata: { lastUpdated: timeStamp },
       });
     }
 
