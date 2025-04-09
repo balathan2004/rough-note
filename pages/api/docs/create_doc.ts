@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { docInterface, ResponseConfig } from "@/components/utils/interfaces";
 import { firestore } from "@/components/firebase_configs/firebase_client";
-import {  arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseConfig>
@@ -11,8 +11,8 @@ export default async function handler(
     req.body as docInterface;
 
   if (doc_id && doc_name && doc_text && doc_created && uid) {
-    const docRef = doc(firestore, "documents",uid);
-    const docFetched=await getDoc(docRef)
+    const docRef = doc(firestore, "documents", uid);
+    const docFetched = await getDoc(docRef);
 
     const data = {
       doc_id,
@@ -22,16 +22,13 @@ export default async function handler(
       uid,
     };
 
-    if(!docFetched.exists()){
-      await setDoc(doc(docRef, uid), { data:[data] });
+    if (!docFetched.exists()) {
+      await setDoc(doc(docRef, uid), { data: [data] });
     }
-    await updateDoc(docRef,{data:arrayUnion(data)})
+    await updateDoc(docRef, { data: arrayUnion(data) });
 
-
-
-  
-    res.json({ message: "John Doe", status: 200 });
+    res.json({ message: "doc added", status: 200 });
   } else {
-    res.json({ message: "John Doe", status: 300 });
+    res.json({ message: "fileds missign", status: 300 });
   }
 }

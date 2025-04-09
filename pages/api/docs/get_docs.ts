@@ -18,7 +18,7 @@ export default async function handler(
     const docRef = doc(firestore, "documents", uid);
     const checkDoc = await getDoc(docRef);
     if (!checkDoc.exists()) {
-      res.json({ message: "no doc found", status: 200, docData: null });
+      res.json({ message: "no doc found", status: 300, docData: null });
       return;
     }
     const docData = checkDoc.data() as wholeDoc;
