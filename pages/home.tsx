@@ -133,12 +133,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ? `${process.env.NEXT_PUBLIC_API_URL}`
       : "http://localhost:3000";
 
-  const response = await fetch(`${url}/api/docs/get_docs`, {
-    method: "POST",
+  const response = await fetch(`${url}/api/docs/get_docs?uid=${uid}`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ uid: uid }),
   });
   const responseJson: docResponse = await response.json();
 

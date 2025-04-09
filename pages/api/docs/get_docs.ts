@@ -12,7 +12,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<docResponse>
 ) {
-  const { uid } = req.body;
+  const uid = req.query.uid as string;
 
   if (uid) {
     const docRef = doc(firestore, "documents", uid);
