@@ -2,7 +2,11 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 import { auth } from "@/components/firebase_configs/firebase_client";
-import { ResponseConfig } from "@/components/utils/interfaces";
+import {
+  dummyWholeDoc,
+  ResponseConfig,
+  wholeDoc,
+} from "@/components/utils/interfaces";
 import { FirebaseError } from "firebase/app";
 import { userInterface } from "@/components/utils/interfaces";
 import { generateUsername } from "unique-username-generator";
@@ -35,18 +39,18 @@ export default async function handler(
       createdAt: new Date().getTime(),
     };
 
+    const newWholeDoc: wholeDoc = {
+      ...dummyWholeDoc,
+      data: dummyWholeDoc.data.map((doc) => ({
+        ...doc,
+        uid: userData.uid,
+      })),
+    };
+
     await setDoc(doc(firestore, "users", userDoc.uid), userDoc);
 
-    // setCookie("roughnote_uid", userDoc.uid, {
-    //   req: req,
-    //   res: res,
-    //   maxAge: 9000000,
-    //   httpOnly: true,
-    //   sameSite: "none",
-    //   secure: isSecure,
-    // });
-
     res.json({ status: 200, message: "Account Created Login To Use" });
+    await setDoc(doc(firestore, "documents", userData.uid), { ...newWholeDoc });
   } catch (err) {
     if (err instanceof FirebaseError) {
       res.json({ status: 300, message: err.code });

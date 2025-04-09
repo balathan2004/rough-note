@@ -18,15 +18,12 @@ interface Props {
 }
 
 const Home: FC<Props> = ({ data }) => {
-
   const [newData, setNewData] = useState<wholeDoc | null>(data);
   const [docs, setDocs] = useState<docInterface[]>([]);
   const { userCred } = useUserContext();
   const [currentDocId, setCurrentDocId] = useState("");
   const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
-
-
 
   useEffect(() => {
     if (currentDocId) {
@@ -50,8 +47,6 @@ const Home: FC<Props> = ({ data }) => {
       setDeletedTrigger(false);
     }
   }, [deletedTrigger]);
-
- 
 
   useEffect(() => {
     if (data?.data?.length === 0) {

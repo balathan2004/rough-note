@@ -16,7 +16,9 @@ export default async function handler(
     const { docData }: { docData: wholeDoc } = req.body;
     const uid = docData.data[0].uid;
 
-    if (!docData) {
+    console.log("overwrite req from" ,uid);
+
+    if (!docData || !uid) {
       res.json({ message: "error", status: 300 });
       return;
     }
