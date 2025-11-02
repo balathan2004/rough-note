@@ -10,7 +10,8 @@ import {
 import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
 import ShortUniqueId from "short-unique-id";
-import { Button } from "@mui/material";
+import { Alert, Button } from "@mui/material";
+import { doc } from "firebase/firestore";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 
 interface Props {
@@ -58,15 +59,23 @@ const Home: FC<Props> = ({ data }) => {
   }, [data]);
 
   const addDoc = () => {
-    const createNewNote: docInterface = {
-      doc_id: randomUUID(),
-      doc_name: "Untitled",
-      doc_text: "",
-      doc_created: new Date().getTime(),
-      uid: userCred?.uid || "",
-    };
-    setDocs([...docs, createNewNote]);
-    setCurrentDocId(createNewNote.doc_id);
+    const lenOfEmptyDocs = docs?.filter(
+      (item) => item.doc_name === "Untitled" && item.doc_text === ""
+    ).length;
+
+    if (lenOfEmptyDocs < 3) {
+      const createNewNote: docInterface = {
+        doc_id: randomUUID(),
+        doc_name: "Untitled",
+        doc_text: "",
+        doc_created: new Date().getTime(),
+        uid: userCred?.uid || "",
+      };
+      setDocs([createNewNote, ...docs]);
+      setCurrentDocId(createNewNote.doc_id);
+
+    }else
+    alert("You Can't add more than three empty docs")
   };
 
   if (!newData) {
@@ -81,6 +90,15 @@ const Home: FC<Props> = ({ data }) => {
             <div className={styles.notes}>
               <h1 className={styles.your_notes}>Your Notes</h1>
               <div className={styles.doc_container}>
+                <Button
+                  onClick={addDoc}
+                  size="large"
+                  fullWidth
+                  variant="contained"
+                >
+                  Create New Note
+                </Button>
+
                 {docs.map((item) => (
                   <SingleNotePressable
                     changeDoc={setCurrentDocId}
@@ -89,9 +107,6 @@ const Home: FC<Props> = ({ data }) => {
                     selectedDocId={currentDocId}
                   />
                 ))}
-                <Button onClick={addDoc} fullWidth variant="contained">
-                  Create New Note
-                </Button>
               </div>
             </div>
             <div className={styles.editor}>
