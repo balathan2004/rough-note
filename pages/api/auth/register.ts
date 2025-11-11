@@ -1,6 +1,5 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { setCookie } from "cookies-next";
 import { auth } from "@/components/firebase_configs/firebase_client";
 import {
   dummyWholeDoc,
@@ -49,13 +48,13 @@ export default async function handler(
 
     await setDoc(doc(firestore, "users", userDoc.uid), userDoc);
 
-    res.json({ status: 200, message: "Account Created Login To Use" });
+    res.status(200).json({ message: "Account Created Login To Use" });
     await setDoc(doc(firestore, "documents", userData.uid), { ...newWholeDoc });
   } catch (err) {
     if (err instanceof FirebaseError) {
-      res.json({ status: 300, message: err.code });
+      res.status(300).json({ message: err.code });
     } else {
-      res.json({ status: 300, message: "Failed to create account" });
+      res.status(300).json({ message: "Failed to create account" });
     }
   }
 }

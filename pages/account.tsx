@@ -1,28 +1,27 @@
-import React, { Component } from "react";
-import { useUserContext } from "@/components/context/user_wrapper";
+import React from "react";
 import styles from "@/styles/Home.module.css";
 import moment from "moment";
-import { useNavbarContext, NavInit } from "@/components/context/navbar_wrapper";
 import { useReplyContext } from "@/components/context/reply_context";
-import { ResponseConfig } from "@/components/utils/interfaces";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
+import { useAuth } from "@/components/redux/api/authSlice";
+import { useLazyLogoutQuery } from "@/components/redux/api/authApi";
 
 export default function Account() {
-  const { userCred, setUserCred } = useUserContext();
-  const { setDirs } = useNavbarContext();
+  const { userData } = useAuth()
   const { setReply } = useReplyContext();
   const router = useRouter();
+  const [logout] = useLazyLogoutQuery()
 
-  const logOut = async () => {
-    const response = await fetch("/api/auth/logout");
-    const res = (await response.json()) as ResponseConfig;
-    if (res && res.status == 200) {
-      setDirs(NavInit);
-      setUserCred(null);
-      setReply(res.message);
+
+  const handleLogout = async () => {
+    logout().unwrap().then(res => {
+      console.log({ res })
       router.push("/");
     }
+
+    ).catch(err => console.log({ err }))
+
   };
 
   return (
@@ -32,12 +31,12 @@ export default function Account() {
           <h1>Your Account Info</h1>
 
           <div className={styles.img_container}>
-            <img src={userCred?.profile_url} alt="profile_image" />
-            <span>{userCred?.display_name}</span>
+            <img src={userData?.profile_url} alt="profile_image" />
+            <span>{userData?.display_name}</span>
           </div>
-          <span>{userCred?.email}</span>
-          <span>Joined {moment(userCred?.createdAt).fromNow()}</span>
-          <Button fullWidth variant="contained" onClick={logOut}>
+          <span>{userData?.email}</span>
+          <span>Joined {moment(userData?.createdAt).fromNow()}</span>
+          <Button fullWidth variant="contained" onClick={handleLogout}>
             Logout
           </Button>
         </article>

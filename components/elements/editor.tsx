@@ -7,7 +7,8 @@ import moment from "moment";
 import lodash from "lodash";
 import { useReplyContext } from "../context/reply_context";
 import { useLoadingContext } from "../context/loadingWrapper";
-import SendData from "../utils/SendData";
+import { useDeleteDocMutation, useUpdateDocMutation } from "../redux/api/postApi";
+
 interface Props {
   docData: docInterface;
   userData: userInterface;
@@ -25,8 +26,9 @@ export default function Editor({
   const [docTitle, setDocTitle] = useState(docData.doc_name);
   const [docText, setDocText] = useState(docData.doc_text);
   const { setReply } = useReplyContext();
+  const [deleteDocMutation] = useDeleteDocMutation()
+  const [updateDoc] = useUpdateDocMutation()
 
-  const { setLoading } = useLoadingContext();
 
   const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,30 +53,29 @@ export default function Editor({
 
   const deleteDoc = async () => {
     const data = { uid: userData.uid, doc_id: mainData.doc_id };
-    setLoading(true);
 
-    const response = await SendData({
-      data: data,
-      route: "/api/docs/delete_doc",
-    });
-    setLoading(false);
-    if (response) {
-      setReply(response.message);
-      if (response.status == 200) {
-        updateData((prev) => {
-          const filtered = prev?.data.filter(
-            (item) => item.doc_id !== mainData.doc_id
-          );
-          return {
-            data: filtered || [],
-            metadata: {
-              lastUpdated: new Date().getTime(),
-            },
-          };
-        });
-        setTrigger(true);
-      }
-    }
+
+    const response = await deleteDocMutation(
+      data,
+
+    ).unwrap().then(res => {
+      updateData((prev) => {
+        const filtered = prev?.data.filter(
+          (item) => item.doc_id !== mainData.doc_id
+        );
+        return {
+          data: filtered || [],
+          metadata: {
+            lastUpdated: new Date().getTime(),
+          },
+        };
+      });
+      setTrigger(true);
+    }).catch(err => {
+      console.log({ err });
+    })
+
+
   };
 
   const copyToClipBoard = async () => {
@@ -99,17 +100,12 @@ export default function Editor({
       setReply("No changes made");
       return;
     }
-    setLoading(true);
-    const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
-    const timeStamp = new Date().getTime();
-    const response = await SendData({
-      data: { ...newData, timeStamp },
-      route: "/api/docs/update_doc",
-    });
 
-    if (response) {
-      setLoading(false);
-      setReply(response.message);
+    const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
+    const lastUpdated = new Date().getTime();
+    updateDoc(
+      { ...newData, lastUpdated }
+    ).unwrap().then(res => {
       setMainData(newData);
       updateData((prev) => {
         const filtered = prev?.data.filter(
@@ -122,11 +118,13 @@ export default function Editor({
             { ...mainData, doc_name: docTitle, doc_text: docText },
           ],
           metadata: {
-            lastUpdated: timeStamp,
+            lastUpdated: lastUpdated,
           },
         };
       });
-    }
+    }).catch(err => console.log({ err }))
+
+
   };
 
   useEffect(() => {

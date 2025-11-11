@@ -13,13 +13,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavbarContext } from "../context/navbar_wrapper";
 import Link from "next/link";
+import { useAuth } from "../redux/api/authSlice";
 
 const drawerWidth = 240;
 
 export default function DrawerAppBar() {
-  const { dirs } = useNavbarContext();
+ 
+  const {navState}=useAuth()
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -38,7 +39,7 @@ export default function DrawerAppBar() {
       </Typography>
       <Divider />
       <List>
-        {dirs.map((item) => (
+        {navState.map((item) => (
           <Link href={item.path} key={item.name}>
             <ListItem  disablePadding>
               <ListItemButton sx={{ textAlign: "center" }}>
@@ -73,7 +74,7 @@ export default function DrawerAppBar() {
             <Link href="/">Rough Note</Link>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {dirs.map((item) => (
+            {navState.map((item) => (
               <Link href={item.path} key={item.name}>
                 <Button sx={{ color: "#fff" }}>{item.name}</Button>
               </Link>

@@ -27,8 +27,8 @@ export default async function handler(
     }
     await updateDoc(docRef, { data: arrayUnion(data) });
 
-    res.json({ message: "doc added", status: 200 });
+    res.status(200).json({ message: "doc added",  });
   } else {
-    res.json({ message: "fileds missign", status: 300 });
+    res.status(300).json({ message: "fileds missign",  });
   }
 }

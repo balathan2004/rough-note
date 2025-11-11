@@ -9,11 +9,11 @@ export default async function (
 ) {
   const email = req.query.email as string;
   if (!email) {
-    res.json({ status: 300, message: "email not found" });
+    res.status(300).json({ message: "email not found" });
     return;
   }
 
   await sendPasswordResetEmail(auth, email);
 
-  res.json({ status: 200, message: `password reset mail sent to ${email}` });
+  res.status(200).json({ message: `password reset mail sent to ${email}` });
 }

@@ -2,13 +2,16 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 import { auth, firestore } from "@/components/firebase_configs/firebase_client";
-import { UserCredResponse, userInterface } from "@/components/utils/interfaces";
+import {
+  AuthResponseConfig,
+  userInterface,
+} from "@/components/utils/interfaces";
 import { FirebaseError } from "firebase/app";
 import { doc, getDoc } from "firebase/firestore";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<UserCredResponse>
+  res: NextApiResponse<AuthResponseConfig>
 ) {
   try {
     const isDev = process.env.NODE_ENV == "production";
@@ -21,7 +24,7 @@ export default async function handler(
     const userDoc = await getDoc(doc(firestore, "users", userID));
 
     if (!userDoc.exists()) {
-      res.json({ status: 300, message: "Login Failed", credentials: null });
+      res.status(300).json({ message: "Login Failed", credentials: null });
       return;
     }
 
@@ -36,16 +39,15 @@ export default async function handler(
       secure: isDev,
     });
 
-    res.json({
-      status: 200,
+    res.status(200).json({
       message: "Login Successful",
       credentials: userData,
     });
   } catch (err) {
     if (err instanceof FirebaseError) {
-      res.json({ status: 300, message: err.code, credentials: null });
+      res.status(300).json({ message: err.code, credentials: null });
     } else {
-      res.json({ status: 300, message: "Login Failed", credentials: null });
+      res.status(300).json({ message: "Login Failed", credentials: null });
     }
   }
 }

@@ -11,7 +11,7 @@ export default async function handler(
     const uid = req.cookies.roughnote_uid || false;
 
     if (!uid) {
-      res.json({ status: 300, message: "Logout Failed" });
+      res.status(300).json({ message: "Logout Failed" });
       return;
     }
 
@@ -24,11 +24,10 @@ export default async function handler(
       secure: isSecure,
     });
 
-    res.json({
-      status: 200,
+    res.status(200).json({
       message: "Logged Out",
     });
   } catch (err) {
-    res.json({ status: 300, message: "Logout Failed" });
+    res.status(300).json({ message: "Logout Failed" });
   }
 }

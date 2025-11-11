@@ -1,16 +1,11 @@
 import React, { FC, useState } from "react";
-import AuthSendData from "@/components/utils/auth_send_data";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 import { Button, TextField } from "@mui/material";
 import { useReplyContext } from "@/components/context/reply_context";
 import Link from "next/link";
-import { useLoadingContext } from "@/components/context/loadingWrapper";
-import { useUserContext } from "@/components/context/user_wrapper";
-import {
-  useNavbarContext,
-  NavUsers,
-} from "@/components/context/navbar_wrapper";
+import { useLoginMutation } from "@/components/redux/api/authApi";
+
 const Login: FC = () => {
   const [userData, setUserData] = useState({
     email: "",
@@ -19,9 +14,9 @@ const Login: FC = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const { setReply } = useReplyContext();
-  const { loading, setLoading } = useLoadingContext();
-  const { setUserCred } = useUserContext();
-  const { setDirs } = useNavbarContext();
+
+  const [login, { isLoading }] = useLoginMutation()
+
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -34,20 +29,16 @@ const Login: FC = () => {
       console.log("Enter Details");
       return;
     }
-    setLoading(true);
-    const response = await AuthSendData({
-      route: "/api/auth/login",
-      data: userData,
-    });
-    setLoading(false);
-    setError(response.message);
-    setReply(response.message);
 
-    if (response.status == 200) {
-      setDirs(NavUsers);
-      setUserCred(response.credentials);
+    await login({ ...userData }).unwrap().then(res => {
       router.push("/account");
-    }
+      setReply("Logged in")
+    }).catch(err => {
+      console.log({ err });
+      setReply(err.message || "error")
+    })
+
+
   };
 
   return (
@@ -84,12 +75,12 @@ const Login: FC = () => {
             <Link href="/auth/reset_password">forget password ??</Link>
             <Link href="/auth/register">create account -&gt; </Link>
             <Button
-              disabled={loading}
+              disabled={isLoading}
               fullWidth
               type="submit"
               variant="outlined"
             >
-              {loading ? "Logging in..." : "Login"}
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
         </article>

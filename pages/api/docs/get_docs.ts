@@ -18,10 +18,19 @@ export default async function handler(
     const docRef = doc(firestore, "documents", uid);
     const checkDoc = await getDoc(docRef);
     if (!checkDoc.exists()) {
-      res.json({ message: "no doc found", status: 300, docData: null });
+      res.status(300).json({ message: "no doc found", docData: null });
       return;
     }
-    const docData = checkDoc.data() as wholeDoc;
-    res.json({ message: "success", status: 200, docData: docData });
+    const { data, metadata } = checkDoc.data() as wholeDoc;
+
+    if (data && Array.isArray(data)) {
+      const sortedItems = data.sort((a, b) => b.doc_created - a.doc_created);
+      console.log(sortedItems);
+      res
+        .status(200)
+        .json({ message: "success", docData: { data: sortedItems, metadata } });
+    }
+
+    res.status(200).json({ message: "success", docData: { data, metadata } });
   }
 }

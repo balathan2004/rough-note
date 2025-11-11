@@ -110,7 +110,8 @@
 }
 
 .doc_container button {
-  width: 35%;
+  max-width: 250px;
+  width: auto;
   margin: 1rem;
 }
 
@@ -180,10 +181,6 @@
   .home_container .editor .btn_container {
     display: flex;
     flex-direction: column;
-  }
-
-  .doc_container button {
-    width: 90%;
   }
 
   .home_container .editor .input,

@@ -1,11 +1,11 @@
 import React, { FC, useState } from "react";
-import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button, TextField } from "@mui/material";
 import { useReplyContext } from "@/components/context/reply_context";
 import { useLoadingContext } from "@/components/context/loadingWrapper";
+import { useRegisterMutation } from "@/components/redux/api/authApi";
 const SignUp: FC = () => {
   const [userData, setUserData] = useState({
     email: "",
@@ -15,6 +15,7 @@ const SignUp: FC = () => {
   const [error, setError] = useState("");
   const { setReply } = useReplyContext();
   const { loading, setLoading } = useLoadingContext();
+  const [register] = useRegisterMutation()
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -28,16 +29,14 @@ const SignUp: FC = () => {
       return;
     }
     setLoading(true);
-    const response = await SendData({
-      route: "/api/auth/register",
-      data: userData,
-    });
-    setLoading(false);
-    setError(response.message);
-    setReply(response.message);
-    if (response.status == 200) {
+    const response = register({
+
+      ...userData,
+    }).unwrap().then(res => {
       router.push("/auth/login");
-    }
+    }).catch(err => console.log({ err }))
+    setLoading(false);
+
   };
 
   return (

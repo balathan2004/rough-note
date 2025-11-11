@@ -16,10 +16,10 @@ export default async function handler(
     const { docData }: { docData: wholeDoc } = req.body;
     const uid = docData.data[0].uid;
 
-    console.log("overwrite req from" ,uid);
+    console.log("overwrite req from", uid);
 
     if (!docData || !uid) {
-      res.json({ message: "error", status: 300 });
+      res.status(300).json({ message: "error" });
       return;
     }
 
@@ -28,15 +28,15 @@ export default async function handler(
     const docFetched = await getDoc(docRef);
 
     if (!docFetched.exists()) {
-      res.json({ message: "error", status: 300 });
+      res.status(300).json({ message: "error" });
       return;
     }
 
     await setDoc(docRef, docData);
 
-    res.json({ message: "Document Updated", status: 200 });
+    res.status(200).json({ message: "Document Updated" });
   } catch (err) {
     console.log(err);
-    res.json({ message: "error", status: 300 });
+    res.status(300).json({ message: "error" });
   }
 }

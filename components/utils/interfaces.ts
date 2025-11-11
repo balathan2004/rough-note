@@ -3,7 +3,6 @@ import ShortUniqueId from "short-unique-id";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 
 export interface ResponseConfig {
-  status: 200 | 300 | 400;
   message: string;
 }
 
@@ -21,9 +20,10 @@ export interface docInterface {
   doc_name: string;
   uid: string;
   doc_created: number;
+  lastUpdated?:number
 }
 
-export interface UserCredResponse extends ResponseConfig {
+export interface AuthResponseConfig extends ResponseConfig {
   credentials: userInterface | null;
 }
 

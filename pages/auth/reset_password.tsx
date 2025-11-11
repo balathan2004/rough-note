@@ -1,14 +1,15 @@
 import React, { FC, useState } from "react";
-import SendData from "@/components/utils/SendData";
 import styles from "@/styles/login.module.css";
 import { TextField, Button } from "@mui/material";
 import { useLoadingContext } from "@/components/context/loadingWrapper";
 import Link from "next/link";
+import { useResetPasswordEmailMutation } from "@/components/redux/api/authApi";
 
 const ResetPassword: FC = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const { loading,setLoading } = useLoadingContext();
+  const { loading, setLoading } = useLoadingContext();
+  const [ResetPassword] = useResetPasswordEmailMutation()
 
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -18,15 +19,12 @@ const ResetPassword: FC = () => {
     }
 
     setLoading(true);
+    ResetPassword(
+      { email: email },
+    ).unwrap().then(res => console.log({ res })).catch(err => {
+      console.log({ err })
+    })
 
-    const response = await SendData({
-      route: `/api/auth/reset_password?email=${email}`,
-      data: { email: email },
-    });
-    setLoading(false);
-    if (response) {
-      setError(response.message);
-    }
   };
 
   return (

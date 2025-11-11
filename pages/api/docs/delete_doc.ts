@@ -13,7 +13,7 @@ export default async function handler(
     console.log(req.body);
 
     if (!(uid && doc_id)) {
-      res.json({ message: "error", status: 300 });
+      res.status(300).json({ message: "error" });
       return;
     }
 
@@ -22,7 +22,7 @@ export default async function handler(
     const docFetched = await getDoc(docRef);
 
     if (!docFetched.exists()) {
-      res.json({ message: "error", status: 300 });
+      res.status(300).json({ message: "error" });
       return;
     }
 
@@ -37,9 +37,9 @@ export default async function handler(
       await updateDoc(docRef, { data: [] });
     }
 
-    res.json({ message: "Document Updated", status: 200 });
+    res.status(200).json({ message: "Document Updated" });
   } catch (err) {
     console.log(err);
-    res.json({ message: "error", status: 300 });
+    res.status(300).json({ message: "error" });
   }
 }

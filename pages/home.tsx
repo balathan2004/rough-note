@@ -1,7 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
-import { useUserContext } from "@/components/context/user_wrapper";
 import {
   docInterface,
   docResponse,
@@ -11,7 +10,8 @@ import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
 import ShortUniqueId from "short-unique-id";
 import { Alert, Button } from "@mui/material";
-import { doc } from "firebase/firestore";
+import { useAuth } from "@/components/redux/api/authSlice";
+
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 
 interface Props {
@@ -21,7 +21,7 @@ interface Props {
 const Home: FC<Props> = ({ data }) => {
   const [newData, setNewData] = useState<wholeDoc | null>(data);
   const [docs, setDocs] = useState<docInterface[]>([]);
-  const { userCred } = useUserContext();
+  const { userData } = useAuth()
   const [currentDocId, setCurrentDocId] = useState("");
   const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
@@ -69,13 +69,13 @@ const Home: FC<Props> = ({ data }) => {
         doc_name: "Untitled",
         doc_text: "",
         doc_created: new Date().getTime(),
-        uid: userCred?.uid || "",
+        uid: userData?.uid || "",
       };
       setDocs([createNewNote, ...docs]);
       setCurrentDocId(createNewNote.doc_id);
 
-    }else
-    alert("You Can't add more than three empty docs")
+    } else
+      alert("You Can't add more than three empty docs")
   };
 
   if (!newData) {
@@ -85,7 +85,7 @@ const Home: FC<Props> = ({ data }) => {
   return (
     <div className="container">
       <div className={styles.home_container}>
-        {userCred && currentDoc && newData ? (
+        {userData && currentDoc && newData ? (
           <div className={styles.wrapper}>
             <div className={styles.notes}>
               <h1 className={styles.your_notes}>Your Notes</h1>
@@ -112,7 +112,7 @@ const Home: FC<Props> = ({ data }) => {
             <div className={styles.editor}>
               {newData ? (
                 <Editor
-                  userData={userCred}
+                  userData={userData}
                   docData={currentDoc}
                   updateData={setNewData}
                   setTrigger={setDeletedTrigger}
