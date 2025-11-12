@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
-import { useReplyContext } from "@/components/context/reply_context";
 import styles from "@/styles/docs.module.css";
 import ReadOnlyCard from "@/components/elements/card";
-import { docInterface } from "@/components/utils/interfaces";
-import { singleDocResponse } from "@/components/utils/interfaces";
 import { useLazyGetSingleDocQuery } from "@/components/redux/api/docsApi";
 export default function GETDOC() {
   const [docName, setDocName] = useState("");
 
   const [getDoc, { data }] = useLazyGetSingleDocQuery()
 
-  const { setReply } = useReplyContext();
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setDocName(value);
