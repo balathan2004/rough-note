@@ -20,7 +20,7 @@ export interface docInterface {
   doc_name: string;
   uid: string;
   doc_created: number;
-  lastUpdated?:number
+  lastUpdated: number;
 }
 
 export interface AuthResponseConfig extends ResponseConfig {
@@ -28,7 +28,7 @@ export interface AuthResponseConfig extends ResponseConfig {
 }
 
 export interface docResponse extends ResponseConfig {
-  docData: wholeDoc | null;
+  docData: docInterface[] ;
 }
 
 export interface wholeDoc {
@@ -45,12 +45,13 @@ export interface singleDocResponse extends ResponseConfig {
 export const dummyWholeDoc: wholeDoc = {
   data: [
     {
-      doc_id:randomUUID(),
+      doc_id: randomUUID(),
       doc_name: "Untitled",
       doc_text: "",
       uid: "",
       doc_created: new Date().getTime(),
-    }
+      lastUpdated: new Date().getTime(),
+    },
   ],
   metadata: {
     lastUpdated: new Date().getTime(),

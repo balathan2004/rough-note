@@ -11,8 +11,8 @@ import { userInterface } from "@/components/utils/interfaces";
 import { generateUsername } from "unique-username-generator";
 import { firestore } from "@/components/firebase_configs/firebase_client";
 import { setDoc, doc } from "firebase/firestore";
-
-export default async function handler(
+import withCors from "@/libs/cors";
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseConfig>
 ) {
@@ -58,3 +58,5 @@ export default async function handler(
     }
   }
 }
+
+export default withCors(handler as any)

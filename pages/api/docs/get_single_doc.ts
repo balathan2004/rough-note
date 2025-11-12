@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
 import { docInterface, singleDocResponse } from "@/components/utils/interfaces";
-
-export default async function (
+import withCors from "@/libs/cors";
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<singleDocResponse>
 ) {
@@ -22,25 +22,23 @@ export default async function (
     return;
   }
 
-  const docRef = await getDoc(doc(firestore, "documents", uid));
+  const docRef = doc(firestore, "documents", uid, "userDocs", doc_id);
 
-  if (!docRef.exists()) {
+  const docFetched = await getDoc(docRef);
+
+  if (!docFetched.exists()) {
     res.status(300).json({ message: "Document doesnt exist", docData: null });
     return;
   }
 
-  const docData = (docRef.data().data as docInterface[]) || null;
+  const docData = docFetched.data() as docInterface;
 
-  if (docData.length < 0) {
+  if (!docData) {
     res.status(300).json({ message: "Document doesnt exist", docData: null });
     return;
   }
-  const findDoc = docData.find((item) => item.doc_id == doc_id) || null;
 
-  if (!findDoc) {
-    res.status(300).json({ message: "Document not found", docData: null });
-    return;
-  }
-
-  res.status(200).json({ message: "doc found", docData: findDoc });
+  res.status(200).json({ message: "doc found", docData: docData });
 }
+
+export default withCors(handler as any);

@@ -6,8 +6,9 @@ import {
 } from "@/components/utils/interfaces";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
+import withCors from "@/libs/cors";
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AuthResponseConfig>
 ) {
@@ -21,7 +22,7 @@ export default async function handler(
   }
 
   try {
-    if (!!uid) {
+    if (!uid) {
       res.status(300).json({ message: "Not authorised", credentials: null });
       return;
     }
@@ -45,3 +46,5 @@ export default async function handler(
     res.status(300).json({ message: "Not authorised", credentials: null });
   }
 }
+
+export default withCors(handler as any);

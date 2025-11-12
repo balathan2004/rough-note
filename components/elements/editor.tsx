@@ -6,28 +6,24 @@ import styles from "@/styles/Home.module.css";
 import moment from "moment";
 import lodash from "lodash";
 import { useReplyContext } from "../context/reply_context";
-import { useLoadingContext } from "../context/loadingWrapper";
-import { useDeleteDocMutation, useUpdateDocMutation } from "../redux/api/postApi";
+import { useAddDocMutation, useDeleteDocMutation } from "../redux/api/docsApi";
 
 interface Props {
   docData: docInterface;
   userData: userInterface;
-  updateData: React.Dispatch<React.SetStateAction<wholeDoc | null>>;
-  setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Editor({
   docData,
   userData,
-  setTrigger,
-  updateData,
 }: Props) {
   const [mainData, setMainData] = useState(docData);
   const [docTitle, setDocTitle] = useState(docData.doc_name);
   const [docText, setDocText] = useState(docData.doc_text);
   const { setReply } = useReplyContext();
   const [deleteDocMutation] = useDeleteDocMutation()
-  const [updateDoc] = useUpdateDocMutation()
+
+  const [addDoc] = useAddDocMutation()
 
 
   const handleInput = (
@@ -59,18 +55,9 @@ export default function Editor({
       data,
 
     ).unwrap().then(res => {
-      updateData((prev) => {
-        const filtered = prev?.data.filter(
-          (item) => item.doc_id !== mainData.doc_id
-        );
-        return {
-          data: filtered || [],
-          metadata: {
-            lastUpdated: new Date().getTime(),
-          },
-        };
-      });
-      setTrigger(true);
+
+      console.log({ res })
+
     }).catch(err => {
       console.log({ err });
     })
@@ -103,25 +90,11 @@ export default function Editor({
 
     const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
     const lastUpdated = new Date().getTime();
-    updateDoc(
+    addDoc(
       { ...newData, lastUpdated }
     ).unwrap().then(res => {
       setMainData(newData);
-      updateData((prev) => {
-        const filtered = prev?.data.filter(
-          (item) => item.doc_id !== mainData.doc_id
-        );
 
-        return {
-          data: [
-            ...(filtered || []),
-            { ...mainData, doc_name: docTitle, doc_text: docText },
-          ],
-          metadata: {
-            lastUpdated: lastUpdated,
-          },
-        };
-      });
     }).catch(err => console.log({ err }))
 
 

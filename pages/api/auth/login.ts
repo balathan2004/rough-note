@@ -8,8 +8,8 @@ import {
 } from "@/components/utils/interfaces";
 import { FirebaseError } from "firebase/app";
 import { doc, getDoc } from "firebase/firestore";
-
-export default async function handler(
+import withCors from "@/libs/cors";
+ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AuthResponseConfig>
 ) {
@@ -17,6 +17,10 @@ export default async function handler(
     const isDev = process.env.NODE_ENV == "production";
 
     const { email, password } = req.body;
+  
+
+    console.log({req});
+
 
     const userID = (await signInWithEmailAndPassword(auth, email, password))
       .user.uid;
@@ -51,3 +55,6 @@ export default async function handler(
     }
   }
 }
+
+
+export default withCors(handler as any)

@@ -7,8 +7,8 @@ import {
 } from "@/components/utils/interfaces";
 import { updateDoc, doc, getDoc, setDoc, arrayUnion } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
-
-export default async function handler(
+import withCors from "@/libs/cors";
+ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseConfig>
 ) {
@@ -40,3 +40,5 @@ export default async function handler(
     res.status(300).json({ message: "error" });
   }
 }
+
+export default withCors(handler as any)
