@@ -5,9 +5,12 @@ import styles from "@/styles/docs.module.css";
 import ReadOnlyCard from "@/components/elements/card";
 import { docInterface } from "@/components/utils/interfaces";
 import { singleDocResponse } from "@/components/utils/interfaces";
+import { useLazyGetSingleDocQuery } from "@/components/redux/api/docsApi";
 export default function GETDOC() {
   const [docName, setDocName] = useState("");
-  const [docData, setDocData] = useState<null | docInterface>(null);
+
+  const [getDoc, { data }] = useLazyGetSingleDocQuery()
+
   const { setReply } = useReplyContext();
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -20,21 +23,10 @@ export default function GETDOC() {
     const extractedDocName = docName.includes("get_document?doc_name=")
       ? docName.split("get_document?doc_name=")[1]
       : docName;
-    const response = await fetch(
-      `/api/docs/get_single_doc?doc_name=${extractedDocName}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
 
-    const res = (await response.json()) as singleDocResponse;
-    if (res) {
-      setReply(res.message);
-      if ((res.status = 200)) {
-        setDocData(res.docData);
-      }
-    }
+    getDoc(extractedDocName)
+
+
   };
 
   return (
@@ -56,7 +48,7 @@ export default function GETDOC() {
               Fetch
             </Button>
           </form>
-          {docData ? <ReadOnlyCard data={docData} /> : null}
+          {data && data.docData && <ReadOnlyCard data={data.docData} />}
         </div>
       </div>
     </div>

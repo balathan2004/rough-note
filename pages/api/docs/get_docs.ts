@@ -24,7 +24,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<docResponse>) {
 
     if (allData && Array.isArray(allData)) {
       const sortedItems = allData.sort((a, b) => b.doc_created - a.doc_created);
-      console.log(sortedItems);
+
       res.status(200).json({ message: "success", docData: sortedItems });
     }
 

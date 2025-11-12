@@ -3,6 +3,7 @@ import {
   docInterface,
   docResponse,
   ResponseConfig,
+  singleDocResponse,
 } from "@/components/utils/interfaces";
 import { baseApi } from "./baseApi";
 
@@ -33,10 +34,16 @@ const docsApis = baseApi.injectEndpoints({
       }),
       providesTags: ["docs"],
     }),
+    getSingleDoc: builder.query<singleDocResponse, string>({
+      query: (docName) => ({
+        url: `/docs/get_single_doc?doc_name=${docName}`,
+      }),
+      providesTags: ["docs"],
+    }),
    
   }),
 });
 
 export default docsApis;
-export const { useDeleteDocMutation, useAddDocMutation, useGetAllDocsQuery } =
+export const { useDeleteDocMutation, useAddDocMutation, useGetAllDocsQuery,useLazyGetSingleDocQuery } =
   docsApis;
