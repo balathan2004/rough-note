@@ -8,14 +8,14 @@ import Editor from "@/components/elements/editor"
 import ShortUniqueId from "short-unique-id";
 import { Button } from "@mui/material";
 import { useAuth } from "@/components/redux/api/authSlice";
-import { useGetAllDocsQuery } from "@/components/redux/api/docsApi";
+import { useGetMyDocsQuery } from "@/components/redux/api/docsApi";
 const { randomUUID } = new ShortUniqueId({ length: 12 });
 
 const Home = () => {
 
   const { userData } = useAuth()
   const [currentDocId, setCurrentDocId] = useState("");
-  const { data: { docData: docs } = {} } = useGetAllDocsQuery(userData.uid, { skip: !userData })
+  const { data: { docData: docs } = {} } = useGetMyDocsQuery()
   const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
 

@@ -28,9 +28,9 @@ const docsApis = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["docs"],
     }),
-    getAllDocs: builder.query<docResponse, string>({
-      query: (uid) => ({
-        url: `/docs/get_docs?uid=${uid}`,
+    getMyDocs: builder.query<docResponse, void>({
+      query: () => ({
+        url: `/docs/get_my_docs`,
       }),
       providesTags: ["docs"],
     }),
@@ -40,10 +40,13 @@ const docsApis = baseApi.injectEndpoints({
       }),
       providesTags: ["docs"],
     }),
-   
   }),
 });
 
 export default docsApis;
-export const { useDeleteDocMutation, useAddDocMutation, useGetAllDocsQuery,useLazyGetSingleDocQuery } =
-  docsApis;
+export const {
+  useDeleteDocMutation,
+  useAddDocMutation,
+  useGetMyDocsQuery,
+  useLazyGetSingleDocQuery,
+} = docsApis;
