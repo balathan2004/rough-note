@@ -20,6 +20,8 @@ export default function Editor({
   const [mainData, setMainData] = useState(docData);
   const [docTitle, setDocTitle] = useState(docData.doc_name);
   const [docText, setDocText] = useState(docData.doc_text);
+  const titleLimit = 100
+  const contentLimit = 10000
   const { setReply } = useReplyContext();
   const [deleteDocMutation] = useDeleteDocMutation()
 
@@ -32,9 +34,9 @@ export default function Editor({
     const { name, value } = event.target;
 
     if (name === "doc_text") {
-      setDocText(value.slice(0, 1000)); // Limit docText to 1000 characters
+      setDocText(value.slice(0, contentLimit));
     } else if (name === "doc_title") {
-      setDocTitle(value.slice(0, 100)); // Limit docTitle to 100 characters
+      setDocTitle(value.slice(0, titleLimit)); 
     }
   };
 
@@ -129,7 +131,7 @@ export default function Editor({
         value={docTitle}
       ></TextField>
       <span className={styles.char_limit_span}>
-        {docTitle.length}/100 characters
+        {docTitle.length}/{titleLimit} characters
       </span>
       <TextField
         placeholder="content"
@@ -149,7 +151,7 @@ export default function Editor({
         }}
       ></TextField>
       <span className={styles.char_limit_span}>
-        {docText.length}/1000 characters
+        {docText.length}/{contentLimit} characters
       </span>
       <span>
         {docData.doc_created != 0
