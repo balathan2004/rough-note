@@ -21,6 +21,7 @@ export interface docInterface {
   uid: string;
   doc_created: number;
   lastUpdated: number;
+  clientOnlyDoc?: boolean;
 }
 
 export interface AuthResponseConfig extends ResponseConfig {
@@ -28,7 +29,7 @@ export interface AuthResponseConfig extends ResponseConfig {
 }
 
 export interface docResponse extends ResponseConfig {
-  docData: docInterface[] ;
+  docData: docInterface[];
 }
 
 export interface wholeDoc {

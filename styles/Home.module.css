@@ -13,6 +13,7 @@
 .home_container .wrapper {
   flex: 1;
   display: flex;
+  gap: 48px;
   justify-content: center;
 }
 
@@ -26,7 +27,7 @@
   margin-top: 1rem;
 }
 
-.home_container .notes .your_notes {
+.home_container .notes .title {
   padding: 1rem;
 }
 
@@ -78,12 +79,12 @@
 
 .doc_container .articlePressable,
 .doc_container .articlePressable_active {
-  max-width: 500px;
   margin: 1rem;
   cursor: pointer;
   padding: 1rem;
   border-radius: 10px;
   border: 0.5px solid gray;
+  overflow: hidden;
   background-color: rgb(170, 203, 216);
 }
 
@@ -110,7 +111,7 @@
 }
 
 .doc_container button {
-  max-width: 250px;
+  /* max-width: 250px; */
   width: auto;
   margin: 1rem;
 }
@@ -167,9 +168,9 @@
     position: relative;
   }
 
-  .home_container .editor h1,
-  .home_container .notes h1 {
+  .home_container .title {
     text-align: center;
+    font-size: 22px;
   }
 
   .home_container .editor .button {
@@ -183,11 +184,18 @@
     flex-direction: column;
   }
 
+
+  .doc_container .articlePressable h1,
+  .doc_container .articlePressable_active h1 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
   .home_container .editor .input,
   .home_container .editor .input_title,
   .doc_container .articlePressable p,
   .doc_container .articlePressable_active p {
-    font-size: 20px;
+    font-size: 16px;
     width: 100%;
   }
 }

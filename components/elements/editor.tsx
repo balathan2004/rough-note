@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { docInterface, userInterface, wholeDoc } from "../utils/interfaces";
 import ReplyIcon from "@mui/icons-material/Reply";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "@/styles/Home.module.css";
 import moment from "moment";
 import lodash from "lodash";
@@ -11,22 +11,37 @@ import { useAddDocMutation, useDeleteDocMutation } from "../redux/api/docsApi";
 interface Props {
   docData: docInterface;
   userData: userInterface;
+  setDocsData: React.Dispatch<React.SetStateAction<docInterface[]>>;
+  setDeleteTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Editor({
   docData,
   userData,
+  setDocsData,
+  setDeleteTrigger,
 }: Props) {
   const [mainData, setMainData] = useState(docData);
   const [docTitle, setDocTitle] = useState(docData.doc_name);
   const [docText, setDocText] = useState(docData.doc_text);
-  const titleLimit = 100
-  const contentLimit = 10000
+
+  const titleLimit = 100;
+  const contentLimit = 10000;
   const { setReply } = useReplyContext();
-  const [deleteDocMutation] = useDeleteDocMutation()
+  const [deleteDocMutation, { isLoading: isDeleting }] = useDeleteDocMutation();
 
-  const [addDoc] = useAddDocMutation()
+  const [addDoc, { isLoading: isAdding }] = useAddDocMutation();
 
+  const isTitleEmpty = docTitle.trim().length === 0;
+  const isTextEmpty = docText.trim().length === 0;
+
+  const noChanges =
+    docTitle.trim() === mainData.doc_name &&
+    docText.trim() === mainData.doc_text;
+
+  const isDisabled = isAdding || isTitleEmpty || isTextEmpty || noChanges;
+
+  const saveButtonText = isAdding ? "Saving…" : noChanges ? "Saved" : "Save";
 
   const handleInput = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -36,7 +51,7 @@ export default function Editor({
     if (name === "doc_text") {
       setDocText(value.slice(0, contentLimit));
     } else if (name === "doc_title") {
-      setDocTitle(value.slice(0, titleLimit)); 
+      setDocTitle(value.slice(0, titleLimit));
     }
   };
 
@@ -50,21 +65,24 @@ export default function Editor({
   };
 
   const deleteDoc = async () => {
+    const { clientOnlyDoc, doc_id } = mainData;
+
+    if (clientOnlyDoc) {
+      setDocsData((prev) => prev.filter((item) => item.doc_id !== doc_id));
+      setDeleteTrigger(true);
+      return;
+    }
+
     const data = { uid: userData.uid, doc_id: mainData.doc_id };
 
-
-    const response = await deleteDocMutation(
-      data,
-
-    ).unwrap().then(res => {
-
-      console.log({ res })
-
-    }).catch(err => {
-      console.log({ err });
-    })
-
-
+    const response = await deleteDocMutation(data)
+      .unwrap()
+      .then((res) => {
+        console.log({ res });
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
   };
 
   const copyToClipBoard = async () => {
@@ -90,16 +108,16 @@ export default function Editor({
       return;
     }
 
-    const newData = { ...mainData, doc_text: docText, doc_name: docTitle };
+    const { clientOnlyDoc, ...rest } = mainData;
+
+    const newData = { ...rest, doc_text: docText, doc_name: docTitle };
     const lastUpdated = new Date().getTime();
-    addDoc(
-      { ...newData, lastUpdated }
-    ).unwrap().then(res => {
-      setMainData(newData);
-
-    }).catch(err => console.log({ err }))
-
-
+    addDoc({ ...newData, lastUpdated })
+      .unwrap()
+      .then((res) => {
+        setMainData(newData);
+      })
+      .catch((err) => console.log({ err }));
   };
 
   useEffect(() => {
@@ -112,7 +130,7 @@ export default function Editor({
 
   return (
     <main>
-      <h1>Editor</h1>
+      <h1 className={styles.title}>Editor</h1>
       <TextField
         name="doc_title"
         fullWidth
@@ -169,14 +187,9 @@ export default function Editor({
           className={styles.button}
           onClick={handleSubmit}
           variant="contained"
-          disabled={
-            docTitle.trim().length === 0 ||
-            docText.trim().length === 0 ||
-            (docTitle.trim() === mainData.doc_name &&
-              docText.trim() === mainData.doc_text)
-          }
+          disabled={isDisabled}
         >
-          Save
+          {saveButtonText}
         </Button>
         <Button
           className={styles.button}
@@ -186,11 +199,12 @@ export default function Editor({
           Discard
         </Button>
         <Button
+          disabled={isDeleting}
           className={styles.button}
           onClick={deleteDoc}
           variant="contained"
         >
-          Delete
+          {isDeleting ? "Deleting" : "Delete"}
         </Button>
       </div>
     </main>

@@ -19,7 +19,7 @@ import withCors from "@/libs/cors";
     const { email, password } = req.body;
   
 
-    console.log({req});
+  console.log("Login Request from ",email);
 
 
     const userID = (await signInWithEmailAndPassword(auth, email, password))
