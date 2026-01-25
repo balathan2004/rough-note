@@ -1,15 +1,14 @@
 // baseApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
-import { User } from "@/server/utils/interfaces";
+import { DataRes, User } from "@/server/utils/interfaces";
 import { setAccessToken } from "./authSlice";
-
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "/api",
   // no credentials here
   prepareHeaders: (headers, { getState }) => {
-    const state = getState() as RootState
+    const state = getState() as RootState;
     const token = state.auth.userData.accessToken;
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
@@ -17,30 +16,29 @@ const baseQuery = fetchBaseQuery({
     headers.set("Content-Type", "application/json");
     return headers;
   },
-})
+});
 
 const baseQueryWithAuth = async (args: any, api: any, extraOptions: any) => {
-
-  let result = await baseQuery(args, api, extraOptions)
+  let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    const { data: responseData, error, } = await baseQuery('/auth/refresh', api, extraOptions)
-    if (responseData) {
-
+    const { data: responseData, error } = (await baseQuery(
+      "/auth/refresh",
+      api,
+      extraOptions,
+    )) as { data: any; error: any };
+    if (responseData && responseData.data) {
       const data = responseData?.data as User;
 
       localStorage.setItem("accessToken", data.accessToken || "");
       api.dispatch(setAccessToken(data.accessToken));
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.logout()
+      api.logout();
     }
-
   }
-  return result
-}
-
-
+  return result;
+};
 
 export const baseApi = createApi({
   baseQuery: baseQueryWithAuth,

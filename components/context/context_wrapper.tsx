@@ -11,9 +11,9 @@ const ContextWrapper: FC<{ children: ReactNode }> = ({ children }) => {
 
   function getToken() {
     const token = localStorage.getItem("accessToken");
- 
+
     if (token) changeAccessToken(token);
-       getLoginCred().unwrap().then(console.log).catch(console.error);
+    getLoginCred().unwrap();
   }
 
   useEffect(() => {

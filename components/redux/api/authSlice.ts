@@ -50,7 +50,6 @@ const authSlice = createSlice({
       builder.addMatcher(
         authApi.endpoints.getLoginCred.matchFulfilled,
         (state, { payload }) => {
-          console.log(payload, "getlogincred fulfilled");
           state.userData = payload.data;
           state.navState = NavUsers;
         },

@@ -16,14 +16,12 @@ interface Props {
   docData: Doc;
   userData: User;
   setDocsData: React.Dispatch<React.SetStateAction<Doc[]>>;
-  setDeleteTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Editor({
   docData,
   userData,
   setDocsData,
-  setDeleteTrigger,
 }: Props) {
   const [mainData, setMainData] = useState(docData);
   const [docTitle, setDocTitle] = useState(docData.doc_name);
@@ -75,7 +73,7 @@ export default function Editor({
 
     if (clientOnlyDoc) {
       setDocsData((prev) => prev.filter((item) => item.doc_id !== doc_id));
-      setDeleteTrigger(true);
+
       return;
     }
 

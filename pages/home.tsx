@@ -17,7 +17,6 @@ const Home = () => {
   const [currentDocId, setCurrentDocId] = useState("");
   const { data: { data: docs } = {} } = useGetAllDocsQuery(params);
   const [currentDoc, setCurrentDoc] = useState<Doc | null>(null);
-  const [deletedTrigger, setDeletedTrigger] = useState(false);
 
   const [localDocs, setLocalDocs] = useState<Doc[]>([]);
 
@@ -39,24 +38,13 @@ const Home = () => {
   }, [currentDocId, docs]);
 
   useEffect(() => {
-    console.log({docs});
+ 
     if (docs && docs.length > 0) {
       setCurrentDocId(docs[0]?.doc_id);
       setCurrentDoc(docs[0]);
       setLocalDocs(docs || []);
     }
   }, [docs]);
-
-  // useEffect(() => {
-  //   console.log({ localDocs });
-  //   if (deletedTrigger && localDocs) {
-  //     console.log({ localDocs });
-  //     setCurrentDoc(localDocs[0] || null);
-  //     setCurrentDocId(localDocs[0].doc_id);
-  //     console.log("setted first docs as selected");
-  //     setDeletedTrigger(false);
-  //   }
-  // }, [deletedTrigger]);
 
   const addDoc = () => {
     const lenOfEmptyDocs =
@@ -69,7 +57,7 @@ const Home = () => {
       setCurrentDoc(createNewNote);
       setCurrentDocId(createNewNote.doc_id);
       setLocalDocs((prev) => [createNewNote, ...prev]);
-    } else alert("You Can't add more than three empty docs");
+    } else alert("You can't add more than three empty docs");
   };
 
   return (
@@ -108,7 +96,6 @@ const Home = () => {
                 userData={userData}
                 docData={currentDoc}
                 setDocsData={setLocalDocs}
-                setDeleteTrigger={setDeletedTrigger}
               />
             </div>
           </div>
