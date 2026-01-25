@@ -38,7 +38,6 @@ const Home = () => {
   }, [currentDocId, docs]);
 
   useEffect(() => {
- 
     if (docs && docs.length > 0) {
       setCurrentDocId(docs[0]?.doc_id);
       setCurrentDoc(docs[0]);
