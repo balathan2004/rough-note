@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { docInterface, userInterface, wholeDoc } from "../utils/interfaces";
+import { Doc, User } from "../../server/utils/interfaces";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "@/styles/Home.module.css";
 import moment from "moment";
 import lodash from "lodash";
 import { useReplyContext } from "../context/reply_context";
-import { useAddDocMutation, useDeleteDocMutation } from "../redux/api/docsApi";
+import {
+  useUpdateDocMutation,
+  useDeleteDocMutation,
+  useCreateDocMutation,
+} from "../redux/api/docsApi";
 
 interface Props {
-  docData: docInterface;
-  userData: userInterface;
-  setDocsData: React.Dispatch<React.SetStateAction<docInterface[]>>;
+  docData: Doc;
+  userData: User;
+  setDocsData: React.Dispatch<React.SetStateAction<Doc[]>>;
   setDeleteTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -30,7 +34,9 @@ export default function Editor({
   const { setReply } = useReplyContext();
   const [deleteDocMutation, { isLoading: isDeleting }] = useDeleteDocMutation();
 
-  const [addDoc, { isLoading: isAdding }] = useAddDocMutation();
+  const [createDoc, { isLoading: isAdding }] = useCreateDocMutation();
+
+  const [updateDoc, { isLoading: isUpdating }] = useUpdateDocMutation();
 
   const isTitleEmpty = docTitle.trim().length === 0;
   const isTextEmpty = docText.trim().length === 0;
@@ -44,7 +50,7 @@ export default function Editor({
   const saveButtonText = isAdding ? "Saving…" : noChanges ? "Saved" : "Save";
 
   const handleInput = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
 
@@ -73,9 +79,7 @@ export default function Editor({
       return;
     }
 
-    const data = { uid: userData.uid, doc_id: mainData.doc_id };
-
-    const response = await deleteDocMutation(data)
+    const response = await deleteDocMutation(doc_id)
       .unwrap()
       .then((res) => {
         console.log({ res });
@@ -112,12 +116,26 @@ export default function Editor({
 
     const newData = { ...rest, doc_text: docText, doc_name: docTitle };
     const lastUpdated = new Date().getTime();
-    addDoc({ ...newData, lastUpdated })
-      .unwrap()
-      .then((res) => {
-        setMainData(newData);
-      })
-      .catch((err) => console.log({ err }));
+
+    if (clientOnlyDoc) {
+      console.log("creating new doc");
+      createDoc({ ...newData, lastUpdated })
+        .unwrap()
+        .then((res) => {
+          setMainData(newData);
+          console.log({ res });
+        })
+        .catch((err) => console.log({ err }));
+    } else {
+      console.log("updating existing doc");
+      updateDoc({ ...newData, lastUpdated })
+        .unwrap()
+        .then((res) => {
+          console.log({ res });
+          setMainData(newData);
+        })
+        .catch((err) => console.log({ err }));
+    }
   };
 
   useEffect(() => {

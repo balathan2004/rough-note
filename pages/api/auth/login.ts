@@ -1,60 +1,34 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { setCookie } from "cookies-next";
-import { auth, firestore } from "@/components/firebase_configs/firebase_client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { DataRes, User } from "@/server/utils/interfaces";
+import withCors from "@/server/middlewares/cors";
+import { bodyValidator } from "@/server/middlewares/bodyValidator";
+import { loginSchema } from "@/server/schemas/auth.schema";
+import { AuthService } from "@/server/services/auth.services";
+import { withErrorHandler } from "@/server/middlewares/withErrorHandler";
+import { AppError } from "@/server/utils/appError";
 import {
-  AuthResponseConfig,
-  userInterface,
-} from "@/components/utils/interfaces";
-import { FirebaseError } from "firebase/app";
-import { doc, getDoc } from "firebase/firestore";
-import withCors from "@/libs/cors";
- async function handler(
+  generateAccessToken,
+  generateRefreshToken,
+} from "@/server/middlewares/jwt";
+import reponseWithCookie from "@/server/utils/responseWithCookie";
+async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AuthResponseConfig>
+  res: NextApiResponse<DataRes<User>>,
 ) {
-  try {
-    const isDev = process.env.NODE_ENV == "production";
+  if (req.method != "POST") throw new AppError("Forbidden Request", 403);
 
-    const { email, password } = req.body;
-  
+  const { email, password } = bodyValidator(loginSchema, req);
 
-  console.log("Login Request from ",email);
+  const data = await AuthService.login(email, password);
 
-
-    const userID = (await signInWithEmailAndPassword(auth, email, password))
-      .user.uid;
-
-    const userDoc = await getDoc(doc(firestore, "users", userID));
-
-    if (!userDoc.exists()) {
-      res.status(300).json({ message: "Login Failed", credentials: null });
-      return;
-    }
-
-    const userData = userDoc.data() as userInterface;
-
-    setCookie("roughnote_uid", userID, {
-      req: req,
-      res: res,
-      maxAge: 2592000000,
-      httpOnly: true,
-      sameSite: isDev ? "none" : "lax",
-      secure: isDev,
-    });
-
-    res.status(200).json({
-      message: "Login Successful",
-      credentials: userData,
-    });
-  } catch (err) {
-    if (err instanceof FirebaseError) {
-      res.status(300).json({ message: err.code, credentials: null });
-    } else {
-      res.status(300).json({ message: "Login Failed", credentials: null });
-    }
-  }
+  const tokens = {
+    accessToken: generateAccessToken(data),
+    refreshToken: generateRefreshToken(data),
+  };
+  reponseWithCookie(req, res, tokens.refreshToken, {
+    data: { ...data, ...tokens },
+    message: "Login Successful",
+  });
 }
 
-
-export default withCors(handler as any)
+export default withCors(withErrorHandler(handler));

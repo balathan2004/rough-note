@@ -1,13 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import {
-  docInterface,
+  Doc,
   docResponse,
-  wholeDoc,
-} from "@/components/utils/interfaces";
+ 
+} from "@/server/utils/interfaces";
 import { getDoc, doc, collection, getDocs } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
-import withCors from "@/libs/cors";
+import withCors from "@/server/middlewares/cors";
 async function handler(req: NextApiRequest, res: NextApiResponse<docResponse>) {
   const uid = req.cookies.roughnote_uid || false;
 
@@ -24,7 +24,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<docResponse>) {
     return;
   }
 
-  const allData = allDocs.docs.map((item) => item.data() as docInterface);
+  const allData = allDocs.docs.map((item) => item.data() as Doc);
 
   if (allData && Array.isArray(allData)) {
     const sortedItems = allData.sort((a, b) => b.doc_created - a.doc_created);

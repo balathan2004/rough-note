@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import authApi from "./authApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { userInterface } from "@/components/utils/interfaces";
+import { User } from "@/server/utils/interfaces";
+
 export type NavBarType = { path: string; name: string }[];
-
-
 
 export const NavGuests = [
   { name: "About", path: "/about" },
@@ -14,40 +13,63 @@ export const NavGuests = [
 ];
 export const NavUsers = [
   { name: "Home", path: "/home" },
-  { name: "Get Note", path: "/get_doc" },
+  { name: "Get Note", path: "/get_document" },
   { name: "About", path: "/about" },
   { name: "Account", path: "/account" },
 ];
 
 const initialState = {
-  userData: {} as userInterface,
+  userData: {
+    display_name: "",
+    email: "",
+    profile_url: "",
+    uid: "",
+    createdAt: 0,
+    accessToken: "",
+  } as User,
   navState: NavGuests,
 };
 
 const authSlice = createSlice({
   initialState: initialState,
   name: "authSlice",
-  reducers: {},
+  reducers: {
+    setAccessToken: (state, action) => {
+      state.userData.accessToken = action.payload;
+    },
+  },
   extraReducers: (builder) => {
-    builder.addMatcher(
+    (builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
-        state.userData = payload.credentials || ({} as userInterface);
+        state.userData = payload.data;
         state.navState = NavUsers;
-      }
+        localStorage.setItem("accessToken", payload.data?.accessToken || "");
+      },
     ),
       builder.addMatcher(
         authApi.endpoints.getLoginCred.matchFulfilled,
         (state, { payload }) => {
-          state.userData = payload.credentials || ({} as userInterface);
+          console.log(payload, "getlogincred fulfilled");
+          state.userData = payload.data;
           state.navState = NavUsers;
-        }
-      );
+        },
+      ));
   },
 });
 
+export const { setAccessToken } = authSlice.actions;
+
 export const useAuth = () => {
-  return useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+
+  const changeAccessToken = (token: string) => {
+    dispatch(setAccessToken(token));
+  };
+
+  const data = useSelector((state: RootState) => state.auth);
+
+  return { ...data, changeAccessToken };
 };
 
 export default authSlice.reducer;

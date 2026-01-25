@@ -1,27 +1,30 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
-import { docInterface } from "@/components/utils/interfaces";
+import { createEmptyDoc, Doc } from "@/server/utils/interfaces";
 import SingleNotePressable from "@/components/elements/singleNote";
 import Editor from "@/components/elements/editor";
-import ShortUniqueId from "short-unique-id";
 import { Button } from "@mui/material";
 import { useAuth } from "@/components/redux/api/authSlice";
-import { useGetMyDocsQuery } from "@/components/redux/api/docsApi";
-const { randomUUID } = new ShortUniqueId({ length: 12 });
+import { useGetAllDocsQuery } from "@/components/redux/api/docsApi";
+import Dropdown, { ElementValue } from "@/components/elements/Dropdown";
 
 const Home = () => {
   const { userData } = useAuth();
+  const [params, setParams] = useState<ElementValue>({
+    order: "desc",
+    sort: "lastUpdated",
+  });
   const [currentDocId, setCurrentDocId] = useState("");
-  const { data: { docData: docs } = {} } = useGetMyDocsQuery();
-  const [currentDoc, setCurrentDoc] = useState<docInterface | null>(null);
+  const { data: { data: docs } = {} } = useGetAllDocsQuery(params);
+  const [currentDoc, setCurrentDoc] = useState<Doc | null>(null);
   const [deletedTrigger, setDeletedTrigger] = useState(false);
 
-  const [localDocs, setLocalDocs] = useState<docInterface[]>([]);
+  const [localDocs, setLocalDocs] = useState<Doc[]>([]);
 
   const allDocs = React.useMemo(() => {
     const serverDocs = docs || [];
     const localOnly = localDocs.filter(
-      (l) => !serverDocs.some((d) => d.doc_id === l.doc_id)
+      (l) => !serverDocs.some((d) => d.doc_id === l.doc_id),
     );
     return [...localOnly, ...serverDocs];
   }, [docs, localDocs]);
@@ -36,6 +39,7 @@ const Home = () => {
   }, [currentDocId, docs]);
 
   useEffect(() => {
+    console.log({docs});
     if (docs && docs.length > 0) {
       setCurrentDocId(docs[0]?.doc_id);
       setCurrentDoc(docs[0]);
@@ -43,35 +47,25 @@ const Home = () => {
     }
   }, [docs]);
 
-  useEffect(() => {
-    console.log({localDocs});
-    if (deletedTrigger && localDocs) {
-      console.log({ localDocs });
-      setCurrentDoc(localDocs[0] || null);
-      setCurrentDocId(localDocs[0].doc_id)
-      console.log("setted first docs as selected");
-      setDeletedTrigger(false);
-    }
-  }, [deletedTrigger]);
+  // useEffect(() => {
+  //   console.log({ localDocs });
+  //   if (deletedTrigger && localDocs) {
+  //     console.log({ localDocs });
+  //     setCurrentDoc(localDocs[0] || null);
+  //     setCurrentDocId(localDocs[0].doc_id);
+  //     console.log("setted first docs as selected");
+  //     setDeletedTrigger(false);
+  //   }
+  // }, [deletedTrigger]);
 
   const addDoc = () => {
     const lenOfEmptyDocs =
       allDocs?.filter(
-        (item) => item.doc_name === "Untitled" && item.doc_text === ""
+        (item) => item.doc_name === "Untitled" && item.doc_text === "",
       ).length || 0;
 
     if (lenOfEmptyDocs < 3) {
-      const creationTime = new Date().getTime();
-
-      const createNewNote: docInterface = {
-        doc_id: randomUUID(),
-        doc_name: "Untitled",
-        doc_text: "",
-        doc_created: creationTime,
-        uid: userData?.uid || "",
-        lastUpdated: creationTime,
-        clientOnlyDoc: true,
-      };
+      const createNewNote: Doc = createEmptyDoc(userData.uid);
       setCurrentDoc(createNewNote);
       setCurrentDocId(createNewNote.doc_id);
       setLocalDocs((prev) => [createNewNote, ...prev]);
@@ -84,7 +78,10 @@ const Home = () => {
         {userData && currentDoc ? (
           <div className={styles.wrapper}>
             <div className={styles.notes}>
+              <Dropdown onChange={(value) => setParams(value)} />
+
               <h1 className={styles.title}>Your Notes</h1>
+
               <div className={styles.doc_container}>
                 <Button
                   className="button"
@@ -96,7 +93,7 @@ const Home = () => {
                   Create New Note
                 </Button>
 
-                {allDocs?.map((item: docInterface) => (
+                {allDocs?.map((item: Doc) => (
                   <SingleNotePressable
                     changeDoc={setCurrentDocId}
                     key={item.doc_id}

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { docInterface, ResponseConfig } from "@/components/utils/interfaces";
+import { Doc, ResponseConfig } from "@/server/utils/interfaces";
 import { firestore } from "@/components/firebase_configs/firebase_client";
 import {
   arrayUnion,
@@ -10,13 +10,18 @@ import {
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import withCors from "@/libs/cors";
+import withCors from "@/server/middlewares/cors";
+import { withErrorHandler } from "@/server/middlewares/withErrorHandler";
+import { bodyValidator } from "@/server/middlewares/bodyValidator";
+
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseConfig>
 ) {
   const { doc_id, doc_name, doc_text, doc_created, uid, lastUpdated } =
-    req.body as docInterface;
+    req.body as Doc;
+
+
 
   console.log(req.body);
 
@@ -24,7 +29,7 @@ async function handler(
     const docRef = doc(firestore, "documents", uid, "userDocs", doc_id);
 
     const docSnap = await getDoc(docRef);
-    const data: docInterface = {
+    const data: Doc = {
       doc_id,
       doc_name,
       doc_text,
@@ -45,4 +50,4 @@ async function handler(
   }
 }
 
-export default withCors(handler as any);
+export default withCors(withErrorHandler(handler));

@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { docInterface, ResponseConfig } from "@/components/utils/interfaces";
+import { Doc, ResponseConfig } from "@/server/utils/interfaces";
 import { updateDoc, doc, getDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
-import withCors from "@/libs/cors";
+import withCors from "@/server/middlewares/cors";
 
 async function handler(
   req: NextApiRequest,

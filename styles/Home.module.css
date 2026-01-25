@@ -88,6 +88,14 @@
   background-color: rgb(170, 203, 216);
 }
 
+.doc_container .articlePressable .article_time_div,
+.doc_container .articlePressable_active .article_time_div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+}
+
 .doc_container .articlePressable_active {
   background-color: rgb(220, 220, 220);
 }
@@ -109,6 +117,8 @@
   font-size: 14px;
   line-height: 35px;
 }
+
+
 
 .doc_container button {
   /* max-width: 250px; */
@@ -183,7 +193,6 @@
     display: flex;
     flex-direction: column;
   }
-
 
   .doc_container .articlePressable h1,
   .doc_container .articlePressable_active h1 {

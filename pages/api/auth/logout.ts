@@ -1,33 +1,29 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { setCookie } from "cookies-next";
-import { ResponseConfig } from "@/components/utils/interfaces";
+import { ResponseConfig } from "@/server/utils/interfaces";
 
-export default async function handler(
+import withCors from "@/server/middlewares/cors";
+import reponseWithCookie from "@/server/utils/responseWithCookie";
+import { withErrorHandler } from "@/server/middlewares/withErrorHandler";
+import { AppError } from "@/server/utils/appError";
+
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseConfig>
 ) {
-  try {
-    const isSecure = process.env.NODE_ENV == "production";
-    const uid = req.cookies.roughnote_uid || false;
 
-    if (!uid) {
-      res.status(300).json({ message: "Logout Failed" });
-      return;
-    }
+  const isSecure = process.env.NODE_ENV == "production";
+  const uid = req.cookies.rough_note_token || false;
 
-    setCookie("roughnote_uid", "", {
-      req: req,
-      res: res,
-      maxAge: 0,
-      httpOnly: true,
-      sameSite: "none",
-      secure: isSecure,
-    });
-
-    res.status(200).json({
-      message: "Logged Out",
-    });
-  } catch (err) {
-    res.status(300).json({ message: "Logout Failed" });
+  if (!uid) {
+    throw new AppError( "Logout Failed",400);
   }
+
+  const response =
+    reponseWithCookie(req, res, "", {
+      message: "Logged Out"
+    });
+
 }
+
+
+export default withCors(withErrorHandler(handler));

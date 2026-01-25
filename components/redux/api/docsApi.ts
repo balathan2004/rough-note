@@ -1,42 +1,52 @@
 import {
-  AuthResponseConfig,
-  docInterface,
-  docResponse,
+  DataRes,
+  Doc,
+  ListRes,
   ResponseConfig,
-  singleDocResponse,
-} from "@/components/utils/interfaces";
+} from "@/server/utils/interfaces";
 import { baseApi } from "./baseApi";
 
 const docsApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    addDoc: builder.mutation<ResponseConfig, docInterface>({
-      query: (payload) => ({
-        url: "/docs/add_doc",
+    createDoc: builder.mutation<ResponseConfig, Doc>({
+      query: (data) => ({
+        url: "/doc/",
         method: "POST",
-        body: payload,
+        body: { data },
       }),
       invalidatesTags: ["docs"],
     }),
-    deleteDoc: builder.mutation<
-      ResponseConfig,
-      { uid: string; doc_id: string }
-    >({
-      query: (payload) => ({
-        url: "/docs/delete_doc",
-        method: "POST",
-        body: payload,
+    updateDoc: builder.mutation<ResponseConfig, Doc>({
+      query: (data) => ({
+        url: `/doc/${data.doc_id}`,
+        method: "PUT",
+        body: { data },
       }),
       invalidatesTags: ["docs"],
     }),
-    getMyDocs: builder.query<docResponse, void>({
-      query: () => ({
-        url: `/docs/get_my_docs`,
+    deleteDoc: builder.mutation<ResponseConfig, string>({
+      query: (doc_id) => ({
+        url: `/doc/${doc_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["docs"],
+    }),
+    getAllDocs: builder.query<ListRes<Doc>, object>({
+      query: (params) => ({
+        url: `/doc/`,
+        params: { ...params },
       }),
       providesTags: ["docs"],
     }),
-    getSingleDoc: builder.query<singleDocResponse, string>({
+    getDoc: builder.query<DataRes<Doc>, string>({
       query: (docName) => ({
-        url: `/docs/get_single_doc?doc_name=${docName}`,
+        url: `/doc/${docName}`,
+      }),
+      providesTags: ["docs"],
+    }),
+    getSingleDoc: builder.query<DataRes<Doc>, string>({
+      query: (doc_id) => ({
+        url: `/public/${doc_id}`,
       }),
       providesTags: ["docs"],
     }),
@@ -46,7 +56,9 @@ const docsApis = baseApi.injectEndpoints({
 export default docsApis;
 export const {
   useDeleteDocMutation,
-  useAddDocMutation,
-  useGetMyDocsQuery,
+  useCreateDocMutation,
+  useUpdateDocMutation,
+  useGetAllDocsQuery,
+  useGetDocQuery,
   useLazyGetSingleDocQuery,
 } = docsApis;

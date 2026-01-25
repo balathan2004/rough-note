@@ -12,11 +12,10 @@ const Login: FC = () => {
     password: "",
   });
   const router = useRouter();
-  const [error, setError] = useState("");
-  const { setReply } = useReplyContext();
 
-  const [login, { isLoading }] = useLoginMutation()
+  const { reply, setReply } = useReplyContext();
 
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -26,19 +25,21 @@ const Login: FC = () => {
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!userData.email && !userData.password) {
-      console.log("Enter Details");
+      setReply("Enter Details");
       return;
     }
 
-    await login({ ...userData }).unwrap().then(res => {
-      router.push("/account");
-      setReply("Logged in")
-    }).catch(err => {
-      console.log({ err });
-      setReply(err.message || "error")
-    })
-
-
+    await login({ ...userData })
+      .unwrap()
+      .then((res) => {
+        console.log({ res });
+        router.push("/account");
+        setReply("Logged in");
+      })
+      .catch((err) => {
+        console.log( err.data );
+        setReply(err.data.error || "error");
+      });
   };
 
   return (
@@ -46,7 +47,7 @@ const Login: FC = () => {
       <div className={styles.login_container}>
         <article>
           <h1>Login</h1>
-          <span>{error}</span>
+          <span>{reply}</span>
           <form onSubmit={handleForm}>
             <div>
               <label>Enter Email</label>

@@ -6,7 +6,7 @@ const ALLOWED_ORIGINS = [
 ];
 
 export function middleware(req: NextRequest) {
-  const client = req.cookies.get("roughnote_uid")?.value || false;
+  const client = req.cookies.get("rough_note_token")?.value || false;
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/api")) {

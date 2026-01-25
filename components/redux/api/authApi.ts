@@ -1,23 +1,24 @@
 import {
-  AuthResponseConfig,
+  DataRes,
   ResponseConfig,
-} from "@/components/utils/interfaces";
+  User,
+} from "@/server/utils/interfaces";
 import { baseApi } from "./baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      AuthResponseConfig,
+      DataRes<User>,
       { email: string; password: string }
     >({
       query: (payload) => ({
         url: "/auth/login",
         method: "POST",
-        body: payload,
+        body: { data: payload },
       }),
     }),
     register: builder.mutation<
-      AuthResponseConfig,
+      DataRes<User>,
       { email: string; password: string }
     >({
       query: (payload) => ({
@@ -26,23 +27,23 @@ const authApi = baseApi.injectEndpoints({
         body: payload,
       }),
     }),
-    getLoginCred: builder.query<AuthResponseConfig, void>({
+    getLoginCred: builder.query<DataRes<User>, void>({
       query: (payload) => ({
         url: "/auth/login_cred",
         method: "GET",
       }),
     }),
-     logout: builder.query<AuthResponseConfig, void>({
+    logout: builder.query<DataRes<User>, void>({
       query: (payload) => ({
         url: "/auth/logout",
         method: "GET",
       }),
     }),
-    resetPasswordEmail:builder.mutation<ResponseConfig,{email:string}>({
-      query:(payload)=>({
-        url:`/auth/reset_password?email=${payload.email}`,
-        body:payload,
-        method:"POST"
+    resetPasswordEmail: builder.mutation<ResponseConfig, { email: string }>({
+      query: (payload) => ({
+        url: `/auth/reset_password?email=${payload.email}`,
+        body: payload,
+        method: "POST"
       })
     })
   }),

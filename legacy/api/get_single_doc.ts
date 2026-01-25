@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "@/components/firebase_configs/firebase_client";
-import { docInterface, singleDocResponse } from "@/components/utils/interfaces";
-import withCors from "@/libs/cors";
+import { Doc, singleDocResponse } from "@/server/utils/interfaces";
+import withCors from "@/server/middlewares/cors";
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<singleDocResponse>
@@ -31,7 +31,7 @@ async function handler(
     return;
   }
 
-  const docData = docFetched.data() as docInterface;
+  const docData = docFetched.data() as Doc;
 
   if (!docData) {
     res.status(300).json({ message: "Document doesnt exist", docData: null });
