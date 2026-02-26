@@ -14,16 +14,21 @@
   flex: 1;
   display: flex;
   gap: 48px;
+  min-width: 0;
   justify-content: center;
+
 }
 
 .home_container .notes {
   padding: 0 1%;
   width: 40%;
+  min-width: 0;
+
 }
 
 .home_container .editor {
   width: 40%;
+  min-width: 0;
   margin-top: 1rem;
 }
 
@@ -161,7 +166,8 @@
 
 @media (max-width: 700px) {
   .home_container .wrapper {
-    flex-direction: column;
+
+    flex-direction: column-reverse;
     gap: 2rem;
   }
 
@@ -172,7 +178,6 @@
   }
 
   .home_container .editor {
-    width: 90%;
     margin: auto;
     padding-bottom: 2rem;
     position: relative;
@@ -184,7 +189,7 @@
   }
 
   .home_container .editor .button {
-    width: 100%;
+    width: auto;
     display: block;
     margin-top: 1rem;
   }
@@ -205,6 +210,6 @@
   .doc_container .articlePressable p,
   .doc_container .articlePressable_active p {
     font-size: 16px;
-    width: 100%;
+    width: auto;
   }
 }
