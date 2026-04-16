@@ -4,15 +4,14 @@ import { DataRes, JwtRequest, User } from "@/server/utils/interfaces";
 import withCors from "@/server/middlewares/cors";
 import { withErrorHandler } from "@/server/middlewares/withErrorHandler";
 import { AppError } from "@/server/utils/appError";
-import {
-  generateAccessToken,
-  verifyJwtToken,
-} from "@/server/middlewares/jwt";
+import { generateAccessToken, verifyJwtToken } from "@/server/middlewares/jwt";
 
 async function handler(req: JwtRequest, res: NextApiResponse<DataRes<User>>) {
-  const token = req.cookies.rough_note_token || req.body.rough_note_token || null;
+  const token = req.body.refreshToken || null;
 
-  const user = verifyJwtToken(token, "refresh") as any // jwt extracted so have more keys
+  console.log({ token });
+
+  const user = verifyJwtToken(token, "refresh") as any; // jwt extracted so have more keys
 
   delete user?.exp;
   delete user?.iat;

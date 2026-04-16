@@ -7,12 +7,14 @@ import { useAuth } from "../redux/api/authSlice";
 
 const ContextWrapper: FC<{ children: ReactNode }> = ({ children }) => {
   const [getLoginCred] = useLazyGetLoginCredQuery();
-  const { changeAccessToken } = useAuth();
+  const { changeAccessToken, changeRefreshToken } = useAuth();
 
   function getToken() {
     const token = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
 
     if (token) changeAccessToken(token);
+    if (refreshToken) changeRefreshToken(refreshToken);
     getLoginCred().unwrap();
   }
 

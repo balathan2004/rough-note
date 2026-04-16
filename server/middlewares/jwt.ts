@@ -19,9 +19,16 @@ export const withJwt = (handler: (req: JwtRequest, res: NextApiResponse) => Prom
 
 }
 
-export const verifyJwtToken = (token: string, type: "access" | "refresh") => {
+export const verifyJwtToken = (token: string|null, type: "access" | "refresh") => {
+
+
+    console.log({token, type},"jwt token and type in verifyJwtToken");
+
 
     if (!token) throw new AppError("No token provided", 401);
+
+
+    console.log("logged after this");
 
     let data: User | null = null;
 

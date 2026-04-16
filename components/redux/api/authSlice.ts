@@ -26,6 +26,7 @@ const initialState = {
     uid: "",
     createdAt: 0,
     accessToken: "",
+    refreshToken: "",
   } as User,
   navState: NavGuests,
 };
@@ -37,6 +38,9 @@ const authSlice = createSlice({
     setAccessToken: (state, action) => {
       state.userData.accessToken = action.payload;
     },
+    setRefreshToken: (state, action) => {
+      state.userData.refreshToken = action.payload;
+    },
   },
   extraReducers: (builder) => {
     (builder.addMatcher(
@@ -45,6 +49,7 @@ const authSlice = createSlice({
         state.userData = payload.data;
         state.navState = NavUsers;
         localStorage.setItem("accessToken", payload.data?.accessToken || "");
+        localStorage.setItem("refreshToken", payload.data?.refreshToken || "");
       },
     ),
       builder.addMatcher(
@@ -57,7 +62,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAccessToken } = authSlice.actions;
+export const { setAccessToken,setRefreshToken } = authSlice.actions;
 
 export const useAuth = () => {
   const dispatch = useDispatch();
@@ -66,9 +71,13 @@ export const useAuth = () => {
     dispatch(setAccessToken(token));
   };
 
+  const changeRefreshToken = (token: string) => {
+    dispatch(setRefreshToken(token));
+  }
+
   const data = useSelector((state: RootState) => state.auth);
 
-  return { ...data, changeAccessToken };
+  return { ...data, changeAccessToken, changeRefreshToken };
 };
 
 export default authSlice.reducer;
